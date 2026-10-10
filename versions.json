@@ -1,0 +1,16 @@
+{
+  "release": "0.1.0-alpha.1",
+  "protocolMajor": 1,
+  "python": ">=3.12",
+  "node": ">=24.0.0",
+  "pyodide": "314.0.7",
+  "pyodidePython": "3.14.2",
+  "micropip": "0.11.1",
+  "packages": {
+    "visionpy": "0.1.0a1",
+    "@visionpy/protocol": "0.1.0-alpha.1",
+    "@visionpy/renderer": "0.1.0-alpha.1",
+    "@visionpy/runtime-pyodide": "0.1.0-alpha.1"
+  },
+  "compatibility": "visionpy 0.1.0a1 wheel imported and executed in Pyodide 314.0.7 / Python 3.14.2 using micropip 0.11.1 in Chromium 156.0.8078.4."
+}

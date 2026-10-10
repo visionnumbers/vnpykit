@@ -1,0 +1,9 @@
+{
+  "protocol": 2,
+  "appId": "app_1",
+  "generation": "generation_1",
+  "seq": 0,
+  "type": "STOP_REQUEST",
+  "payload": {}
+}
+

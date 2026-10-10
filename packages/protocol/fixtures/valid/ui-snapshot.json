@@ -1,0 +1,17 @@
+{
+  "protocol": 1,
+  "appId": "app_1",
+  "generation": "generation_1",
+  "seq": 0,
+  "type": "UI_SNAPSHOT",
+  "payload": {
+    "title": "Fixture",
+    "root": {
+      "id": "1",
+      "kind": "text",
+      "props": { "text": "Hello", "level": "body", "tone": "default" },
+      "children": []
+    }
+  }
+}
+

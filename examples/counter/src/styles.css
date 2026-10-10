@@ -1,0 +1,8 @@
+:root { font-family: system-ui, sans-serif; color-scheme: light dark; }
+body { margin: 0; background: Canvas; color: CanvasText; }
+main { max-width: 900px; margin: 2rem auto; padding: 0 1rem; }
+.apps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; }
+.apps > div { border: 1px solid GrayText; border-radius: .5rem; padding: 1rem; }
+#remount { margin-top: 1rem; padding: .5rem .8rem; }
+#metrics { overflow: auto; font-size: .75rem; }
+

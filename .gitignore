@@ -1,0 +1,14 @@
+node_modules/
+dist/
+coverage/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+__pycache__/
+*.py[cod]
+.venv/
+examples/counter/public/pyodide/
+examples/counter/public/wheels/
+test-results/
+playwright-report/
