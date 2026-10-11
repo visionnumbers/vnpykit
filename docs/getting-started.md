@@ -1,20 +1,20 @@
 # Getting started
 
-VisionPy's provisional M3 CLI requires Node.js 24 or newer. The local repository
+VNPyKit's provisional M3 CLI requires Node.js 24 or newer. The local repository
 build also requires Python 3.12 and Corepack. No package has been published; use the
 locally packed artifact during development.
 
 ```shell
-visionpy create hello-app
+vnpykit create hello-app
 cd hello-app
-visionpy run app.py
+vnpykit run app.py
 ```
 
 Open the loopback URL printed by the command. Edit `app.py`; the development page
 reloads from local assets. Create a deployable site with:
 
 ```shell
-visionpy build app.py --out-dir dist --base /my/site/
+vnpykit build app.py --out-dir dist --base /my/site/
 ```
 
 Serve `dist` through HTTP. Browsers cannot boot the module Worker and WebAssembly

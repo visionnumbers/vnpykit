@@ -13,4 +13,4 @@ examples/counter/public/wheels/
 test-results/
 playwright-report/
 packages/cli/assets/
-.visionpy/
+.vnpykit/

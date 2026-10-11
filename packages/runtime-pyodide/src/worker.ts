@@ -1,7 +1,7 @@
-import { parseEnvelope, PROTOCOL_MAJOR, type ProtocolMessage } from "@visionpy/protocol";
+import { parseEnvelope, PROTOCOL_MAJOR, type ProtocolMessage } from "@vnpykit/protocol";
 
 interface WorkerInit {
-  kind: "VISIONPY_INIT";
+  kind: "VNPYKIT_INIT";
   appId: string;
   generation: string;
   python: { kind: "url"; url: string } | { kind: "source"; source: string };
@@ -46,7 +46,7 @@ async function boot(init: WorkerInit): Promise<void> {
   let snapshotSent = false;
   const startedAt = performance.now();
   const trace = (stage: string): void => {
-    console.debug("VISIONPY_WORKER_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - startedAt });
+    console.debug("VNPYKIT_WORKER_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - startedAt });
   };
 
   const post = (type: ProtocolMessage["type"], payload: Record<string, unknown>): void => {
@@ -61,8 +61,8 @@ async function boot(init: WorkerInit): Promise<void> {
     dispatch?.destroy();
     dispatch = undefined;
     if (pyodide !== undefined) {
-      try { pyodide.runPython("import visionpy._bridge as _vp_bridge; _vp_bridge.dispose_transport()"); } catch { /* worker termination is the final cleanup boundary */ }
-      for (const name of ["_visionpy_send", "_visionpy_app_id", "_visionpy_generation"]) pyodide.globals.delete(name);
+      try { pyodide.runPython("import vnpykit._bridge as _vp_bridge; _vp_bridge.dispose_transport()"); } catch { /* worker termination is the final cleanup boundary */ }
+      for (const name of ["_vnpykit_send", "_vnpykit_app_id", "_vnpykit_generation"]) pyodide.globals.delete(name);
     }
     port.close();
   };
@@ -78,16 +78,16 @@ async function boot(init: WorkerInit): Promise<void> {
     // full micropip resolver during every Worker startup.
     await pyodide.loadPackage(init.wheelUrl);
     trace("wheel-installed");
-    pyodide.globals.set("_visionpy_app_id", appId);
-    pyodide.globals.set("_visionpy_generation", generation);
-    pyodide.globals.set("_visionpy_send", (serialized: string) => {
+    pyodide.globals.set("_vnpykit_app_id", appId);
+    pyodide.globals.set("_vnpykit_generation", generation);
+    pyodide.globals.set("_vnpykit_send", (serialized: string) => {
       const message = parseEnvelope(JSON.parse(serialized) as unknown);
       if (message.appId !== appId || message.generation !== generation || message.seq !== workerSeq) throw new Error("Python emitted an invalid session envelope");
       if (message.type === "UI_SNAPSHOT") snapshotSent = true;
       workerSeq += 1;
       port.postMessage(message);
     });
-    await pyodide.runPythonAsync("import visionpy._bridge as _vp_bridge\n_vp_bridge.install(_visionpy_send, _visionpy_app_id, _visionpy_generation)");
+    await pyodide.runPythonAsync("import vnpykit._bridge as _vp_bridge\n_vp_bridge.install(_vnpykit_send, _vnpykit_app_id, _vnpykit_generation)");
     const result = pyodide.runPython("_vp_bridge.dispatch_json");
     if (!isPyProxyFunction(result)) throw new Error("Python bridge dispatch is unavailable");
     dispatch = result;
@@ -126,7 +126,7 @@ async function boot(init: WorkerInit): Promise<void> {
 function isInit(value: unknown): value is WorkerInit {
   if (typeof value !== "object" || value === null) return false;
   const record = value as Partial<WorkerInit>;
-  return record.kind === "VISIONPY_INIT"
+  return record.kind === "VNPYKIT_INIT"
     && typeof record.appId === "string"
     && typeof record.generation === "string"
     && typeof record.pyodideModuleUrl === "string"

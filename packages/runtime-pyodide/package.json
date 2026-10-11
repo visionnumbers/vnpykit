@@ -1,5 +1,5 @@
 {
-  "name": "@visionpy/runtime-pyodide",
+  "name": "@vnpykit/runtime-pyodide",
   "version": "0.1.0-alpha.1",
   "private": true,
   "type": "module",
@@ -13,8 +13,8 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@visionpy/protocol": "workspace:*",
-    "@visionpy/renderer": "workspace:*",
+    "@vnpykit/protocol": "workspace:*",
+    "@vnpykit/renderer": "workspace:*",
     "pyodide": "314.0.7"
   },
   "license": "Apache-2.0",

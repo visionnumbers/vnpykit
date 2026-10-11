@@ -1,6 +1,6 @@
 """Python-visible protocol version and typed envelope definitions.
 
-Validation authority lives in ``@visionpy/protocol``. These definitions let
+Validation authority lives in ``@vnpykit/protocol``. These definitions let
 the future Worker bridge produce messages without importing browser objects.
 """
 

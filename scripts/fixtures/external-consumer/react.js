@@ -7,12 +7,12 @@ globalThis.reactReady = undefined;
 function Host() {
   const container = useRef(null);
   useEffect(() => {
-    globalThis.console.debug("VISIONPY_REACT_LIFECYCLE", { stage: "effect-mount", at: globalThis.performance.now() });
+    globalThis.console.debug("VNPYKIT_REACT_LIFECYCLE", { stage: "effect-mount", at: globalThis.performance.now() });
     const app = mount(container.current);
     globalThis.reactApp = app;
     globalThis.reactReady = app.ready;
     return () => {
-      globalThis.console.debug("VISIONPY_REACT_LIFECYCLE", { stage: "effect-cleanup", appId: app.appId, at: globalThis.performance.now() });
+      globalThis.console.debug("VNPYKIT_REACT_LIFECYCLE", { stage: "effect-cleanup", appId: app.appId, at: globalThis.performance.now() });
       void app.dispose();
     };
   }, []);

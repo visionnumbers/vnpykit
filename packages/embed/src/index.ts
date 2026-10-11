@@ -1,22 +1,22 @@
-import { createVisionPyApp as createRuntimeApp } from "@visionpy/runtime-pyodide";
+import { createVNPyKitApp as createRuntimeApp } from "@vnpykit/runtime-pyodide";
 
-export type VisionPyStatus = "created" | "loading" | "ready" | "running" | "stopping" | "disposed" | "failed";
+export type VNPyKitStatus = "created" | "loading" | "ready" | "running" | "stopping" | "disposed" | "failed";
 
-export interface VisionPyErrorEvent {
+export interface VNPyKitErrorEvent {
   code: string;
   message: string;
   phase: string;
   fatal: boolean;
 }
 
-export interface VisionPyMetrics {
+export interface VNPyKitMetrics {
   createdAt: number;
   runtimeReadyMs?: number;
   firstRenderMs?: number;
   lastCallbackLatencyMs?: number;
 }
 
-export interface CreateVisionPyOptions {
+export interface CreateVNPyKitOptions {
   mount: HTMLElement;
   python: { kind: "url"; url: string } | { kind: "source"; source: string };
   assetsBaseUrl: string;
@@ -27,23 +27,23 @@ export interface CreateVisionPyOptions {
   wheelFileName?: string;
 }
 
-export interface VisionPyAppHandle {
+export interface VNPyKitAppHandle {
   readonly ready: Promise<void>;
-  readonly status: VisionPyStatus;
+  readonly status: VNPyKitStatus;
   readonly appId: string;
   readonly generation: string;
-  readonly metrics: Readonly<VisionPyMetrics>;
+  readonly metrics: Readonly<VNPyKitMetrics>;
   stop(): Promise<void>;
   dispose(): Promise<void>;
-  recreate(): Promise<VisionPyAppHandle>;
+  recreate(): Promise<VNPyKitAppHandle>;
   focus(nodeId: string): boolean;
-  onError(listener: (error: VisionPyErrorEvent) => void): () => void;
+  onError(listener: (error: VNPyKitErrorEvent) => void): () => void;
 }
 
-/** Mount a VisionPy application into a caller-owned element. */
-export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHandle {
-  return createRuntimeApp(options) as VisionPyAppHandle;
+/** Mount a VNPyKit application into a caller-owned element. */
+export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandle {
+  return createRuntimeApp(options) as VNPyKitAppHandle;
 }
 
 /** Stable framework-independent alias used by browser hosts. */
-export const mountVisionPy: typeof createVisionPyApp = createVisionPyApp;
+export const mountVNPyKit: typeof createVNPyKitApp = createVNPyKitApp;

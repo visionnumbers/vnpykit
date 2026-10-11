@@ -32,4 +32,4 @@ class SubmitEvent:
     kind: Literal["submit"] = "submit"
 
 
-type VisionPyEvent = ClickEvent | InputEvent | ChangeEvent[str] | ChangeEvent[bool] | SubmitEvent
+type VNPyKitEvent = ClickEvent | InputEvent | ChangeEvent[str] | ChangeEvent[bool] | SubmitEvent

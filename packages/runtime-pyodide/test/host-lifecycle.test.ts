@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { createVisionPyApp } from "../src/host.js";
+import { createVNPyKitApp } from "../src/host.js";
 
 describe("runtime startup lifecycle", () => {
   afterEach(() => vi.unstubAllGlobals());
@@ -16,7 +16,7 @@ describe("runtime startup lifecycle", () => {
     });
     vi.stubGlobal("MessageChannel", FakeMessageChannel);
 
-    const handle = createVisionPyApp({
+    const handle = createVNPyKitApp({
       mount: document.createElement("div"),
       python: { kind: "source", source: "pass" },
       assetsBaseUrl: "https://example.test/assets/",

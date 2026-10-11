@@ -5,20 +5,27 @@ import { fileURLToPath } from "node:url";
 import { spawn } from "node:child_process";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const consumer = resolve(tmpdir(), "visionpy-m3-external-consumer");
+const consumer = resolve(tmpdir(), "vnpykit-m3-external-consumer");
 if (!consumer.startsWith(resolve(tmpdir()))) throw new Error("consumer path escaped the system temp directory");
 await rm(consumer, { recursive: true, force: true });
 await mkdir(consumer, { recursive: true });
 
 const node = process.execPath;
 const npmCli = process.env.npm_execpath ?? join(dirname(node), "node_modules", "npm", "bin", "npm-cli.js");
-const packRoot = join(root, ".visionpy", "packs");
-const embedPack = join(packRoot, "visionpy-embed-0.1.0-alpha.1.tgz");
-const cliPack = join(packRoot, "visionpy-cli-0.1.0-alpha.1.tgz");
+const packRoot = join(root, ".vnpykit", "packs");
+const protocolPack = join(packRoot, "vnpykit-protocol-0.1.0-alpha.1.tgz");
+const rendererPack = join(packRoot, "vnpykit-renderer-0.1.0-alpha.1.tgz");
+const runtimePack = join(packRoot, "vnpykit-runtime-pyodide-0.1.0-alpha.1.tgz");
+const embedPack = join(packRoot, "vnpykit-embed-0.1.0-alpha.1.tgz");
+const cliPack = join(packRoot, "vnpykit-cli-0.1.0-alpha.1.tgz");
 await npmCommand(["init", "-y"], consumer);
-await npmCommand(["install", "--save-exact", embedPack, cliPack, "react@19.3.0", "react-dom@19.3.0", "vue@3.5.43", "vite@8.3.4"], consumer);
+await npmCommand([
+  "install", "--save-exact",
+  protocolPack, rendererPack, runtimePack, embedPack, cliPack,
+  "react@19.3.0", "react-dom@19.3.0", "vue@3.5.43", "vite@8.3.4",
+], consumer);
 
-const cli = join(consumer, "node_modules", "@visionpy", "cli", "dist", "bin.js");
+const cli = join(consumer, "node_modules", "@vnpykit", "cli", "dist", "bin.js");
 await command(node, [cli, "create", "hello-app"], consumer);
 await command(node, [cli, "build", "hello-app/app.py", "--out-dir", "static", "--base", "/nested/app/"], consumer);
 

@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: process.env.VISIONPY_BASE_URL ?? "/",
+  base: process.env.VNPYKIT_BASE_URL ?? "/",
   build: {
     outDir: "dist",
     sourcemap: true,

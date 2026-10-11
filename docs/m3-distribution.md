@@ -4,11 +4,11 @@ M3 adds local distribution artifacts without publishing them.
 
 ## Implemented surface
 
-- `visionpy create <directory>` writes a minimal form project.
-- `visionpy run <app.py>` builds into a temporary directory, binds to loopback by
+- `vnpykit create <directory>` writes a minimal form project.
+- `vnpykit run <app.py>` builds into a temporary directory, binds to loopback by
   default, serves local assets, and reloads after source changes.
-- `visionpy build <app.py>` writes a deployable static site and checksum manifest.
-- `@visionpy/embed` exposes `mountVisionPy` and `createVisionPyApp` with ready,
+- `vnpykit build <app.py>` writes a deployable static site and checksum manifest.
+- `@vnpykit/embed` exposes `mountVNPyKit` and `createVNPyKitApp` with ready,
   error, stop, dispose, recreate, focus, status, generation, and metrics.
 
 The server rejects non-loopback hosts unless `--allow-public` is explicit. Entry,
@@ -19,14 +19,14 @@ a security sandbox for hostile Python.
 ## Static layout
 
 The generated directory contains `index.html`, `app.js`, `app.py`,
-`visionpy-manifest.json`, runtime JavaScript, a separate Worker, Pyodide files,
-and the VisionPy wheel. The manifest records protocol 1, CLI and Pyodide
+`vnpykit-manifest.json`, runtime JavaScript, a separate Worker, Pyodide files,
+and the VNPyKit wheel. The manifest records protocol 1, CLI and Pyodide
 versions, deployment base, file sizes, SHA-256 hashes, and reproducible epoch.
 
 ## Verification conditions
 
 The external acceptance fixture is created under the operating-system temp
-directory. It installs only locally packed `@visionpy/embed` and `@visionpy/cli`
+directory. It installs only locally packed `@vnpykit/embed` and `@vnpykit/cli`
 tarballs, exact React/Vue/Vite versions, and their registry dependencies. It neither
 uses workspace aliases nor imports monorepo source. Its Vite production output and
 CLI output are served by `scripts/static-server.mjs`.
@@ -53,7 +53,7 @@ Observed Chromium result on that run:
 | WebAssembly response | 2,412.6 ms / 9,599,545 B | 567.8 ms / 9,599,545 B |
 | Python stdlib response | 183.0 ms / 2,545,992 B | 124.1 ms / 2,545,992 B |
 | micropip wheel response | 26.4 ms / 115,508 B | 5.2 ms / 115,508 B |
-| VisionPy wheel response | 33.2 ms / 13,897 B | 4.9 ms / 13,897 B |
+| VNPyKit wheel response | 33.2 ms / 13,897 B | 4.9 ms / 13,897 B |
 | Python source response | 10.2 ms / 688 B | 5.8 ms / 688 B |
 
 “Warm” means a second independent Worker started after the first rendered in the
@@ -63,7 +63,7 @@ an immutable-cache production forecast.
 
 The opt-in Chromium release stress completed 100 dispose/remount cycles in 8.9
 minutes. Forced-GC samples every ten cycles reported two live
-`data-visionpy-root` owners throughout. Chromium exposed a coarse
+`data-vnpykit-root` owners throughout. Chromium exposed a coarse
 `usedJSHeapSize` value of 10,000,000 bytes at every sample; this detects no growth
 in that run but is not a native Worker/Python heap proof. The final instance
 rendered and remained interactive.
@@ -88,5 +88,24 @@ at 53.905 seconds, but Python bridge import did not finish before the unchanged
 The documentation-final artifacts passed all 12 serialized external cases in 2.7
 minutes. WebKit 27.2 rendered the React StrictMode fixture at 10.858 seconds; an
 isolated repeat of the same runtime rendered at 11.020 seconds. The 120-second timeout was
-unchanged. M3 browser acceptance is therefore PASS. ADR-0007 still blocks the
-requested public-name migration and public release.
+unchanged. M3 browser acceptance is therefore PASS. ADR-0008 later supersedes the
+historical identity gate for local engineering migration.
+
+## VNPyKit M3.2 migration verification
+
+ADR-0008 changes the active distribution identity without changing protocol major
+1 or runtime behavior. The final artifacts are `vnpykit` 0.1.0a1 and local
+0.1.0-alpha.1 tarballs for protocol, renderer, Pyodide runtime, embed, and CLI.
+The CLI embeds the exact VNPyKit wheel and generates `vnpykit-manifest.json`,
+`vnpykit.js`, and a `wheels/vnpykit-0.1.0a1-py3-none-any.whl` runtime path.
+
+The independently installed tarball consumer passed CLI create/run/build, nested
+static deployment, two plain instances, React StrictMode, and Vue in Chromium,
+Firefox, and WebKit: 12/12 cases in 3.4 minutes. WebKit 27.2 completed the React
+case in 30.2 seconds under the unchanged 120-second budget. The explicit 100-cycle
+Chromium stress run passed in 9.6 minutes; all ten forced-GC samples retained two
+roots and reported the same coarse 10,000,000-byte JS heap value.
+
+All 24 files in the generated nested-site manifest matched their recorded byte
+counts and SHA-256 values. Active and deployable output scans found no obsolete
+VisionPy package, import, executable, npm-scope, or asset reference.

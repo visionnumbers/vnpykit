@@ -8,10 +8,10 @@ import { runDevServer } from "../src/server.js";
 
 let root: string;
 
-beforeAll(async () => { root = await mkdtemp(resolve(tmpdir(), "visionpy-cli-")); });
+beforeAll(async () => { root = await mkdtemp(resolve(tmpdir(), "vnpykit-cli-")); });
 afterAll(async () => { await rm(root, { recursive: true, force: true }); });
 
-describe("VisionPy CLI", () => {
+describe("VNPyKit CLI", () => {
   it("creates and reproducibly builds a nested static application", async () => {
     const project = await createProject(resolve(root, "hello-app"));
     const first = await buildStaticApp({ entry: resolve(project, "app.py"), outDir: resolve(root, "first"), basePath: "/nested/demo/" });

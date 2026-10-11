@@ -8,7 +8,7 @@ const exampleRoot = resolve(directory, "..");
 const repositoryRoot = resolve(exampleRoot, "../..");
 const require = createRequire(import.meta.url);
 const pyodideRoot = dirname(require.resolve("pyodide/package.json"));
-const wheel = resolve(repositoryRoot, "packages/python-sdk/dist/visionpy-0.1.0a1-py3-none-any.whl");
+const wheel = resolve(repositoryRoot, "packages/python-sdk/dist/vnpykit-0.1.0a1-py3-none-any.whl");
 const micropipWheel = resolve(repositoryRoot, "vendor/pyodide/micropip-0.11.1-py3-none-any.whl");
 
 try {
@@ -21,5 +21,5 @@ await mkdir(resolve(exampleRoot, "public/pyodide"), { recursive: true });
 await mkdir(resolve(exampleRoot, "public/wheels"), { recursive: true });
 await cp(pyodideRoot, resolve(exampleRoot, "public/pyodide"), { recursive: true, force: true });
 await copyFile(micropipWheel, resolve(exampleRoot, "public/pyodide/micropip-0.11.1-py3-none-any.whl"));
-await copyFile(wheel, resolve(exampleRoot, "public/wheels/visionpy-0.1.0a1-py3-none-any.whl"));
+await copyFile(wheel, resolve(exampleRoot, "public/wheels/vnpykit-0.1.0a1-py3-none-any.whl"));
 

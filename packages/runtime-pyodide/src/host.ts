@@ -1,31 +1,31 @@
-import { parseEnvelope, PROTOCOL_MAJOR, type ErrorMessage, type ProtocolMessage, type UserEvent } from "@visionpy/protocol";
-import { createRenderer, type Renderer } from "@visionpy/renderer";
+import { parseEnvelope, PROTOCOL_MAJOR, type ErrorMessage, type ProtocolMessage, type UserEvent } from "@vnpykit/protocol";
+import { createRenderer, type Renderer } from "@vnpykit/renderer";
 
-export type VisionPyStatus = "created" | "loading" | "ready" | "running" | "stopping" | "disposed" | "failed";
+export type VNPyKitStatus = "created" | "loading" | "ready" | "running" | "stopping" | "disposed" | "failed";
 
-export type VisionPyErrorEvent = ErrorMessage["payload"];
+export type VNPyKitErrorEvent = ErrorMessage["payload"];
 
-export interface VisionPyMetrics {
+export interface VNPyKitMetrics {
   createdAt: number;
   runtimeReadyMs?: number;
   firstRenderMs?: number;
   lastCallbackLatencyMs?: number;
 }
 
-export interface VisionPyAppHandle {
+export interface VNPyKitAppHandle {
   readonly ready: Promise<void>;
-  readonly status: VisionPyStatus;
+  readonly status: VNPyKitStatus;
   readonly appId: string;
   readonly generation: string;
-  readonly metrics: Readonly<VisionPyMetrics>;
+  readonly metrics: Readonly<VNPyKitMetrics>;
   stop(): Promise<void>;
   dispose(): Promise<void>;
-  recreate(): Promise<VisionPyAppHandle>;
+  recreate(): Promise<VNPyKitAppHandle>;
   focus(nodeId: string): boolean;
-  onError(listener: (error: VisionPyErrorEvent) => void): () => void;
+  onError(listener: (error: VNPyKitErrorEvent) => void): () => void;
 }
 
-export interface CreateVisionPyOptions {
+export interface CreateVNPyKitOptions {
   mount: HTMLElement;
   python: { kind: "url"; url: string } | { kind: "source"; source: string };
   assetsBaseUrl: string;
@@ -37,19 +37,19 @@ export interface CreateVisionPyOptions {
 }
 
 interface WorkerInit {
-  kind: "VISIONPY_INIT";
+  kind: "VNPYKIT_INIT";
   appId: string;
   generation: string;
-  python: CreateVisionPyOptions["python"];
+  python: CreateVNPyKitOptions["python"];
   pyodideModuleUrl: string;
   pyodideIndexUrl: string;
   wheelUrl: string;
   port: MessagePort;
 }
 
-export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHandle {
+export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandle {
   const createdAt = performance.now();
-  const metrics: VisionPyMetrics = { createdAt };
+  const metrics: VNPyKitMetrics = { createdAt };
   const appId = `app_${crypto.randomUUID().replaceAll("-", "")}`;
   const generation = `worker_${crypto.randomUUID().replaceAll("-", "")}`;
   const base = normalizedBase(options.assetsBaseUrl);
@@ -58,7 +58,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
   const shutdownGraceMs = options.shutdownGraceMs ?? 1_000;
   if (startupTimeoutMs <= 0 || shutdownGraceMs < 0) throw new RangeError("runtime timeouts must be positive");
 
-  let status: VisionPyStatus = "created";
+  let status: VNPyKitStatus = "created";
   let worker: Worker | undefined;
   let renderer: Renderer | undefined;
   let port: MessagePort | undefined;
@@ -70,9 +70,9 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
   let stopResolver: (() => void) | undefined;
   let disposeAckResolver: (() => void) | undefined;
   let lastEventAt: number | undefined;
-  const errorListeners = new Set<(error: VisionPyErrorEvent) => void>();
+  const errorListeners = new Set<(error: VNPyKitErrorEvent) => void>();
   const trace = (stage: string, detail: Record<string, unknown> = {}): void => {
-    console.debug("VISIONPY_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - createdAt, ...detail });
+    console.debug("VNPYKIT_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - createdAt, ...detail });
   };
 
   let resolveReady: () => void = () => undefined;
@@ -82,13 +82,13 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     rejectReady = reject;
   });
 
-  const fail = (error: VisionPyErrorEvent): void => {
+  const fail = (error: VNPyKitErrorEvent): void => {
     status = "failed";
     renderer?.showFailure(`${error.code}: ${error.message}`);
     for (const listener of errorListeners) listener(error);
     if (!settledReady) {
       settledReady = true;
-      rejectReady(new VisionPyHostError(error));
+      rejectReady(new VNPyKitHostError(error));
     }
   };
 
@@ -108,7 +108,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     // Keep this URL dynamic so library bundlers do not inline executable worker
     // source as a data: URL. The embed package ships worker.js beside its entry.
     const workerUrl = options.workerUrl ?? new URL([".", "worker.js"].join("/"), import.meta.url);
-    worker = new Worker(workerUrl, { type: "module", name: `VisionPy ${appId}` });
+    worker = new Worker(workerUrl, { type: "module", name: `VNPyKit ${appId}` });
     trace("worker-created", { workerUrl: workerUrl.href });
 
     renderer.onUserEvent((payload: UserEvent["payload"]) => {
@@ -174,13 +174,13 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     });
 
     const init: WorkerInit = {
-      kind: "VISIONPY_INIT",
+      kind: "VNPYKIT_INIT",
       appId,
       generation,
       python,
       pyodideModuleUrl: new URL("pyodide/pyodide.mjs", base).href,
       pyodideIndexUrl: new URL("pyodide/", base).href,
-      wheelUrl: new URL(`wheels/${options.wheelFileName ?? "visionpy-0.1.0a1-py3-none-any.whl"}`, base).href,
+      wheelUrl: new URL(`wheels/${options.wheelFileName ?? "vnpykit-0.1.0a1-py3-none-any.whl"}`, base).href,
       port: channel.port2,
     };
     worker.postMessage(init, [channel.port2]);
@@ -196,12 +196,12 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     }
   }, startupTimeoutMs);
 
-  const handle: VisionPyAppHandle = {
+  const handle: VNPyKitAppHandle = {
     ready,
-    get status(): VisionPyStatus { return status; },
+    get status(): VNPyKitStatus { return status; },
     appId,
     generation,
-    get metrics(): Readonly<VisionPyMetrics> { return metrics; },
+    get metrics(): Readonly<VNPyKitMetrics> { return metrics; },
     async stop(): Promise<void> {
       if (disposed || status === "disposed") return;
       status = "stopping";
@@ -224,7 +224,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
         globalThis.clearTimeout(startupTimer);
         if (!settledReady) {
           settledReady = true;
-          rejectReady(new VisionPyHostError({ code: "DISPOSED", message: "disposed before ready", phase: "bootstrap", fatal: true }));
+          rejectReady(new VNPyKitHostError({ code: "DISPOSED", message: "disposed before ready", phase: "bootstrap", fatal: true }));
         }
         status = "stopping";
         trace("dispose-start", { statusAtDispose });
@@ -257,14 +257,14 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
       })();
       return disposePromise;
     },
-    async recreate(): Promise<VisionPyAppHandle> {
+    async recreate(): Promise<VNPyKitAppHandle> {
       await handle.dispose();
-      return createVisionPyApp(options);
+      return createVNPyKitApp(options);
     },
     focus(nodeId: string): boolean {
       return renderer?.focus(nodeId) ?? false;
     },
-    onError(listener: (error: VisionPyErrorEvent) => void): () => void {
+    onError(listener: (error: VNPyKitErrorEvent) => void): () => void {
       errorListeners.add(listener);
       return () => errorListeners.delete(listener);
     },
@@ -272,11 +272,11 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
   return handle;
 }
 
-export class VisionPyHostError extends Error {
-  public readonly detail: VisionPyErrorEvent;
-  public constructor(detail: VisionPyErrorEvent) {
+export class VNPyKitHostError extends Error {
+  public readonly detail: VNPyKitErrorEvent;
+  public constructor(detail: VNPyKitErrorEvent) {
     super(`${detail.code}: ${detail.message}`);
-    this.name = "VisionPyHostError";
+    this.name = "VNPyKitHostError";
     this.detail = detail;
   }
 }
@@ -287,7 +287,7 @@ function normalizedBase(value: string): URL {
   return url;
 }
 
-function normalizePython(python: CreateVisionPyOptions["python"]): CreateVisionPyOptions["python"] {
+function normalizePython(python: CreateVNPyKitOptions["python"]): CreateVNPyKitOptions["python"] {
   if (python.kind === "source") return python;
   const url = new URL(python.url, document.baseURI);
   if (url.origin !== location.origin) throw new TypeError("Python URL must be same-origin");

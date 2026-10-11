@@ -1,14 +1,14 @@
 {
-  "name": "@visionpy/embed",
+  "name": "@vnpykit/embed",
   "version": "0.1.0-alpha.1",
   "private": true,
   "type": "module",
-  "main": "./dist/visionpy.js",
+  "main": "./dist/vnpykit.js",
   "types": "./dist/types/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/types/index.d.ts",
-      "default": "./dist/visionpy.js"
+      "default": "./dist/vnpykit.js"
     },
     "./package.json": "./package.json"
   },
@@ -19,7 +19,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
-    "@visionpy/runtime-pyodide": "workspace:*",
+    "@vnpykit/runtime-pyodide": "workspace:*",
     "vite": "8.3.4"
   },
   "license": "Apache-2.0",

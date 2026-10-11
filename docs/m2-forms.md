@@ -5,8 +5,8 @@ also adds native form submission, typed event values, validation text, loading a
 failure states, bounded reactive processing, and handle recreation.
 
 ```python
-from visionpy import App, State
-from visionpy.ui import Button, Checkbox, Column, Row, Text, TextInput
+from vnpykit import App, State
+from vnpykit.ui import Button, Checkbox, Column, Row, Text, TextInput
 
 app = App(title="Registration")
 name = State("")
@@ -58,7 +58,7 @@ returning a fresh handle and generation. Callers still await `replacement.ready`
 
 Reference machine: Windows 11 Pro 10.0.26200, Intel Core i3-8145U 2.10 GHz,
 7.9 GiB RAM, Node 24.20.0, pnpm 12.10.1, Pyodide 314.0.7/Python 3.14.2,
-Playwright 1.64.0. Assets and the VisionPy wheel were served from localhost.
+Playwright 1.64.0. Assets and the VNPyKit wheel were served from localhost.
 
 Three isolated Chromium repetitions used one Playwright worker. Each browser
 context started one cold app, then a second app after the first was ready so HTTP

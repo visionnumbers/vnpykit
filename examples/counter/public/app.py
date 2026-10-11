@@ -1,7 +1,7 @@
-from visionpy import App, State, __version__
-from visionpy.ui import Button, Checkbox, Column, Container, Row, Text, TextInput
+from vnpykit import App, State, __version__
+from vnpykit.ui import Button, Checkbox, Column, Container, Row, Text, TextInput
 
-app = App(title="VisionPy Counter")
+app = App(title="VNPyKit Counter")
 count = State(0)
 name = State("")
 accepted = State(False)
@@ -17,7 +17,7 @@ def submit() -> None:
         result.set(f"Submitted for {name.value}.")
 
 with app.layout(), Container(padding=20), Column(gap=12, on_submit=submit):
-    Text("VisionPy Counter", level="h2")
+    Text("VNPyKit Counter", level="h2")
     Text(f"SDK {__version__}", tone="muted")
     Text.bind(lambda: f"Count: {count.value}")
     Button("Increase", on_click=lambda: count.set(count.value + 1))

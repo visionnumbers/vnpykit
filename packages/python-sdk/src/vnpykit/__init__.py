@@ -1,4 +1,4 @@
-"""VisionPy's pure-Python SDK contract package."""
+"""VNPyKit's pure-Python SDK contract package."""
 
 from ._version import __version__
 from .app import App, AppStatus
@@ -9,8 +9,8 @@ from .exceptions import (
     LifecycleError,
     ProtocolMismatchError,
     UnsupportedFeatureError,
-    VisionPyError,
-    VisionPyRuntimeError,
+    VNPyKitError,
+    VNPyKitRuntimeError,
 )
 from .protocol import PROTOCOL_MAJOR
 from .state import State
@@ -29,7 +29,7 @@ __all__ = [
     "State",
     "SubmitEvent",
     "UnsupportedFeatureError",
-    "VisionPyError",
-    "VisionPyRuntimeError",
+    "VNPyKitError",
+    "VNPyKitRuntimeError",
     "__version__",
 ]

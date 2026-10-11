@@ -10,7 +10,7 @@ const Host = {
     let app;
     onMounted(() => {
       app = mount(container.value);
-      globalThis.vueVisionPyApp = app;
+      globalThis.vueVNPyKitApp = app;
       void app.ready.then(resolveReady);
     });
     onBeforeUnmount(() => { if (app) void app.dispose(); });

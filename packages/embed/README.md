@@ -1,12 +1,12 @@
-# `@visionpy/embed`
+# `@vnpykit/embed`
 
-Framework-independent browser entry point for VisionPy. It mounts into a caller-owned
+Framework-independent browser entry point for VNPyKit. It mounts into a caller-owned
 HTMLElement and returns the standard ready/error/stop/dispose/recreate handle.
 
 ```js
-import { mountVisionPy } from "@visionpy/embed";
+import { mountVNPyKit } from "@vnpykit/embed";
 
-const app = mountVisionPy({
+const app = mountVNPyKit({
   mount: document.querySelector("#app"),
   python: { kind: "url", url: new URL("./app.py", location.href).href },
   assetsBaseUrl: new URL("./assets/", location.href).href,

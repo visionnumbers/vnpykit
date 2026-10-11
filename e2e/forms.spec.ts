@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("real Python controlled forms are accessible and isolated", async ({ page, browserName }) => {
   await page.goto("/");
   await expect(page.locator("#app-one").getByRole("status")).toContainText("Loading");
-  await page.evaluate(() => window.visionpyDemo.ready);
+  await page.evaluate(() => window.vnpykitDemo.ready);
 
   const first = page.locator("#app-one");
   const second = page.locator("#app-two");
@@ -46,8 +46,8 @@ test("real Python controlled forms are accessible and isolated", async ({ page, 
   expect(semantics).toEqual({ tag: "INPUT", label: "Name", invalid: "false" });
 
   const metrics = await page.evaluate(() => ({
-    cold: window.visionpyDemo.getFirst().metrics,
-    warm: window.visionpyDemo.getSecond().metrics,
+    cold: window.vnpykitDemo.getFirst().metrics,
+    warm: window.vnpykitDemo.getSecond().metrics,
   }));
   console.log(`M2_BENCHMARK ${browserName} ${JSON.stringify(metrics)}`);
   expect(metrics.cold.firstRenderMs).toBeGreaterThan(0);
@@ -58,9 +58,9 @@ test("real Python controlled forms are accessible and isolated", async ({ page, 
 test("fatal Python startup errors produce an instance-scoped alert", async ({ page, browserName }) => {
   test.skip(browserName !== "chromium", "Fatal-state smoke runs once on Chromium.");
   await page.goto("/");
-  await page.evaluate(() => window.visionpyDemo.ready);
+  await page.evaluate(() => window.vnpykitDemo.ready);
   await page.evaluate(() => {
-    const failed = window.visionpyDemo.mountSource('raise RuntimeError("expected startup failure")');
+    const failed = window.vnpykitDemo.mountSource('raise RuntimeError("expected startup failure")');
     void failed.ready.catch(() => undefined);
     window.failedApp = failed;
   });
@@ -75,11 +75,11 @@ test("30-cycle disposal and recreation keeps generations isolated", async ({ pag
   test.skip(browserName !== "chromium", "Long lifecycle coverage runs once on Chromium.");
   test.setTimeout(600_000);
   await page.goto("/");
-  await page.evaluate(() => window.visionpyDemo.ready);
-  let generation = await page.evaluate(() => window.visionpyDemo.getFirst().generation);
+  await page.evaluate(() => window.vnpykitDemo.ready);
+  let generation = await page.evaluate(() => window.vnpykitDemo.getFirst().generation);
   for (let cycle = 0; cycle < 30; cycle += 1) {
-    await page.evaluate(() => window.visionpyDemo.remountFirst());
-    const next = await page.evaluate(() => window.visionpyDemo.getFirst().generation);
+    await page.evaluate(() => window.vnpykitDemo.remountFirst());
+    const next = await page.evaluate(() => window.vnpykitDemo.getFirst().generation);
     expect(next).not.toBe(generation);
     generation = next;
   }
@@ -92,16 +92,16 @@ test("100-cycle release stress", async ({ page, browserName }) => {
   test.skip(process.env.RUN_RELEASE_STRESS !== "1", "Set RUN_RELEASE_STRESS=1 for the explicit release stress gate.");
   test.setTimeout(1_800_000);
   await page.goto("/");
-  await page.evaluate(() => window.visionpyDemo.ready);
+  await page.evaluate(() => window.vnpykitDemo.ready);
   const memory: Array<{ cycle: number; heapBytes?: number; owners: number }> = [];
   for (let cycle = 0; cycle < 100; cycle += 1) {
-    await page.evaluate(() => window.visionpyDemo.remountFirst());
+    await page.evaluate(() => window.vnpykitDemo.remountFirst());
     if ((cycle + 1) % 10 === 0) {
       await page.requestGC();
       memory.push(await page.evaluate((completed) => ({
         cycle: completed,
         heapBytes: (performance as Performance & { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize,
-        owners: document.querySelectorAll("[data-visionpy-root]").length,
+        owners: document.querySelectorAll("[data-vnpykit-root]").length,
       }), cycle + 1));
     }
   }
@@ -113,7 +113,7 @@ test("100-cycle release stress", async ({ page, browserName }) => {
 declare global {
   interface Window {
     failedApp: { dispose(): Promise<void> };
-    visionpyDemo: {
+    vnpykitDemo: {
       ready: Promise<void>;
       getFirst(): {
         generation: string;

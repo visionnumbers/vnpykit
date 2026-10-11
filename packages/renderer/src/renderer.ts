@@ -9,7 +9,7 @@ import {
   type UserEvent,
   type VNode,
   type WidgetKind,
-} from "@visionpy/protocol";
+} from "@vnpykit/protocol";
 
 export interface Renderer {
   mount(snapshot: UiSnapshot): void;
@@ -56,7 +56,7 @@ export function createRenderer(options: RendererOptions): Renderer {
   const listeners = new Set<(event: UserEvent["payload"]) => void>();
   const owner = document.createElement("div");
   owner.className = "vp-owner";
-  owner.setAttribute("data-visionpy-root", "");
+  owner.setAttribute("data-vnpykit-root", "");
   const shadow = owner.attachShadow({ mode: "open" });
   const style = document.createElement("style");
   style.textContent = STYLES;

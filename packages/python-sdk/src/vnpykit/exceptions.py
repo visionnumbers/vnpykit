@@ -5,10 +5,10 @@ from __future__ import annotations
 from collections.abc import Mapping
 
 
-class VisionPyError(Exception):
+class VNPyKitError(Exception):
     """Base exception with a stable machine-readable code."""
 
-    default_code = "VISIONPY_ERROR"
+    default_code = "VNPYKIT_ERROR"
 
     def __init__(
         self,
@@ -26,21 +26,21 @@ class VisionPyError(Exception):
         return f"{self.code}: {self.message}"
 
 
-class InvalidPropertyError(VisionPyError):
+class InvalidPropertyError(VNPyKitError):
     default_code = "INVALID_PROPERTY"
 
 
-class LifecycleError(VisionPyError):
+class LifecycleError(VNPyKitError):
     default_code = "LIFECYCLE_ERROR"
 
 
-class ProtocolMismatchError(VisionPyError):
+class ProtocolMismatchError(VNPyKitError):
     default_code = "PROTOCOL_MISMATCH"
 
 
-class VisionPyRuntimeError(VisionPyError):
+class VNPyKitRuntimeError(VNPyKitError):
     default_code = "RUNTIME_ERROR"
 
 
-class UnsupportedFeatureError(VisionPyError):
+class UnsupportedFeatureError(VNPyKitError):
     default_code = "UNSUPPORTED_FEATURE"

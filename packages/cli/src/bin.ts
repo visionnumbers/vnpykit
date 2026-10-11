@@ -5,26 +5,26 @@ async function main(args: string[]): Promise<void> {
   const [command, subject, ...rest] = args;
   if (command === undefined || command === "help" || command === "--help" || command === "-h") return help();
   if (command === "create") {
-    if (subject === undefined) throw new Error("Usage: visionpy create <directory>");
+    if (subject === undefined) throw new Error("Usage: vnpykit create <directory>");
     const path = await createProject(subject);
     console.log(`Created ${path}`);
     return;
   }
   if (command === "build") {
-    if (subject === undefined) throw new Error("Usage: visionpy build <app.py> [--out-dir dist] [--base /]");
+    if (subject === undefined) throw new Error("Usage: vnpykit build <app.py> [--out-dir dist] [--base /]");
     const flags = parseFlags(rest);
     const manifest = await buildStaticApp({
       entry: subject,
       outDir: flags.get("out-dir") ?? "dist",
       basePath: flags.get("base") ?? "/",
       assetsPath: flags.get("assets-path") ?? "assets",
-      title: flags.get("title") ?? "VisionPy application",
+      title: flags.get("title") ?? "VNPyKit application",
     });
     console.log(`Built ${manifest.files.length} files for ${manifest.deploymentBase}`);
     return;
   }
   if (command === "run") {
-    if (subject === undefined) throw new Error("Usage: visionpy run <app.py> [--port 4173] [--host 127.0.0.1]");
+    if (subject === undefined) throw new Error("Usage: vnpykit run <app.py> [--port 4173] [--host 127.0.0.1]");
     const flags = parseFlags(rest);
     const portText = flags.get("port") ?? "4173";
     if (!/^\d{1,5}$/u.test(portText)) throw new Error("--port must be an integer");
@@ -36,7 +36,7 @@ async function main(args: string[]): Promise<void> {
       assetsPath: flags.get("assets-path") ?? "assets",
       allowPublic: flags.has("allow-public"),
     });
-    console.log(`VisionPy development server: ${server.url}`);
+    console.log(`VNPyKit development server: ${server.url}`);
     const stop = async (): Promise<void> => { await server.close(); process.exitCode = 0; };
     process.once("SIGINT", () => void stop());
     process.once("SIGTERM", () => void stop());
@@ -62,10 +62,10 @@ function parseFlags(args: string[]): Map<string, string> {
 }
 
 function help(): void {
-  console.log(`VisionPy CLI\n\n  visionpy create <directory>\n  visionpy run <app.py> [--port 4173] [--host 127.0.0.1] [--base /]\n  visionpy build <app.py> [--out-dir dist] [--base /]\n\nNode.js 24+ is required. Public host binding requires --allow-public.`);
+  console.log(`VNPyKit CLI\n\n  vnpykit create <directory>\n  vnpykit run <app.py> [--port 4173] [--host 127.0.0.1] [--base /]\n  vnpykit build <app.py> [--out-dir dist] [--base /]\n\nNode.js 24+ is required. Public host binding requires --allow-public.`);
 }
 
 void main(process.argv.slice(2)).catch((error: unknown) => {
-  process.stderr.write(`VisionPy: ${error instanceof Error ? error.message : "unknown error"}\n`);
+  process.stderr.write(`VNPyKit: ${error instanceof Error ? error.message : "unknown error"}\n`);
   process.exitCode = 1;
 });

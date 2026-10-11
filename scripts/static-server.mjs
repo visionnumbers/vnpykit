@@ -4,7 +4,7 @@ import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import { tmpdir } from "node:os";
 
-const root = resolve(process.env.VISIONPY_STATIC_DIR ?? join(tmpdir(), "visionpy-m3-external-consumer", "site", "dist"));
+const root = resolve(process.env.VNPYKIT_STATIC_DIR ?? join(tmpdir(), "vnpykit-m3-external-consumer", "site", "dist"));
 const types = new Map([[".html", "text/html; charset=utf-8"], [".js", "text/javascript; charset=utf-8"], [".mjs", "text/javascript; charset=utf-8"], [".css", "text/css; charset=utf-8"], [".py", "text/x-python; charset=utf-8"], [".wasm", "application/wasm"], [".whl", "application/zip"], [".zip", "application/zip"], [".json", "application/json; charset=utf-8"]]);
 const server = createServer(async (request, response) => {
   try {

@@ -70,8 +70,11 @@ jobs:
       - run: pnpm build
       - run: pnpm exec playwright install --with-deps chromium firefox webkit
       - run: pnpm test:e2e
-      - run: mkdir -p .visionpy/packs
-      - run: pnpm --filter @visionpy/embed pack --pack-destination .visionpy/packs
-      - run: pnpm --filter @visionpy/cli pack --pack-destination .visionpy/packs
+      - run: mkdir -p .vnpykit/packs
+      - run: pnpm --filter @vnpykit/protocol pack --pack-destination .vnpykit/packs
+      - run: pnpm --filter @vnpykit/renderer pack --pack-destination .vnpykit/packs
+      - run: pnpm --filter @vnpykit/runtime-pyodide pack --pack-destination .vnpykit/packs
+      - run: pnpm --filter @vnpykit/embed pack --pack-destination .vnpykit/packs
+      - run: pnpm --filter @vnpykit/cli pack --pack-destination .vnpykit/packs
       - run: node scripts/prepare-external-consumer.mjs
       - run: pnpm exec playwright test --config playwright.external.config.ts

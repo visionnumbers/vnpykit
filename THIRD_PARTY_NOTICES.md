@@ -1,6 +1,6 @@
 # Third-party notices
 
-VisionPy's source dependencies are recorded at exact versions in `pnpm-lock.yaml`,
+VNPyKit's source dependencies are recorded at exact versions in `pnpm-lock.yaml`,
 `packages/python-sdk/pyproject.toml`, and `versions.json`. Their licenses remain the
 licenses of their respective authors.
 
@@ -19,12 +19,12 @@ loader for the dependency-free SDK wheel.
 
 ## M3 static runtime
 
-`@visionpy/cli` depends exactly on the npm package `pyodide@314.0.7` and copies its
+`@vnpykit/cli` depends exactly on the npm package `pyodide@314.0.7` and copies its
 runtime files, package lock, and upstream license into generated static output. The
-CLI also includes the locally built Apache-2.0 VisionPy wheel. Generated copies and
+CLI also includes the locally built Apache-2.0 VNPyKit wheel. Generated copies and
 local npm tarballs are ignored and
 are not source-controlled or published.
 
 React 19.3.0, React DOM 19.3.0, Vue 3.5.43, and Vite 8.3.4 are pinned only in the
 temporary external acceptance project. They are test hosts and are not bundled in
-the VisionPy CLI or embed package.
+the VNPyKit CLI or embed package.

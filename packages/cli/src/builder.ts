@@ -38,12 +38,12 @@ export async function buildStaticApp(options: StaticBuildOptions): Promise<Build
   assertSeparatePaths(entry, outDir);
   const basePath = normalizeBasePath(options.basePath ?? "/");
   const assetsPath = normalizeAssetPath(options.assetsPath ?? "assets");
-  const title = boundedTitle(options.title ?? "VisionPy application");
+  const title = boundedTitle(options.title ?? "VNPyKit application");
 
-  const embedEntry = require.resolve("@visionpy/embed");
+  const embedEntry = require.resolve("@vnpykit/embed");
   const embedRoot = dirname(embedEntry);
   const pyodideRoot = dirname(require.resolve("pyodide/package.json"));
-  const wheel = await findSingleFile(resolve(packageRoot, "assets/wheels"), /^visionpy-.*-py3-none-any\.whl$/u, "VisionPy wheel");
+  const wheel = await findSingleFile(resolve(packageRoot, "assets/wheels"), /^vnpykit-.*-py3-none-any\.whl$/u, "VNPyKit wheel");
 
   await rm(outDir, { recursive: true, force: true });
   await mkdir(resolve(outDir, assetsPath, "runtime"), { recursive: true });
@@ -55,7 +55,7 @@ export async function buildStaticApp(options: StaticBuildOptions): Promise<Build
   await writeFile(resolve(outDir, "index.html"), html(title), "utf8");
   await writeFile(resolve(outDir, "app.js"), browserEntry(assetsPath, basename(wheel), options.liveReload === true), "utf8");
 
-  const files = await checksumTree(outDir, new Set(["visionpy-manifest.json"]));
+  const files = await checksumTree(outDir, new Set(["vnpykit-manifest.json"]));
   const sourceDateEpoch = parseSourceDateEpoch(process.env.SOURCE_DATE_EPOCH);
   const manifest: BuildManifest = {
     schema: 1,
@@ -67,14 +67,14 @@ export async function buildStaticApp(options: StaticBuildOptions): Promise<Build
     sourceDateEpoch,
     files,
   };
-  await writeFile(resolve(outDir, "visionpy-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
+  await writeFile(resolve(outDir, "vnpykit-manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`, "utf8");
   await validateStaticOutput(outDir, manifest);
   return manifest;
 }
 
 export async function validateStaticOutput(outDirInput: string, manifest?: BuildManifest): Promise<void> {
   const outDir = resolve(outDirInput);
-  const checked = manifest ?? JSON.parse(await readFile(resolve(outDir, "visionpy-manifest.json"), "utf8")) as BuildManifest;
+  const checked = manifest ?? JSON.parse(await readFile(resolve(outDir, "vnpykit-manifest.json"), "utf8")) as BuildManifest;
   if (checked.schema !== 1 || checked.protocol !== PROTOCOL_MAJOR) throw new Error("Static manifest is incompatible with this CLI.");
   for (const file of checked.files) {
     const path = resolveInside(outDir, file.path);
@@ -128,7 +128,7 @@ async function findSingleFile(root: string, pattern: RegExp, label: string): Pro
   let names: string[];
   try { names = (await readdir(root)).filter((name) => pattern.test(name)).sort(); }
   catch { throw new Error(`Missing packaged ${label} directory: ${root}`); }
-  if (names.length !== 1) throw new Error(`Expected one packaged ${label}; found ${names.length}. Rebuild @visionpy/cli.`);
+  if (names.length !== 1) throw new Error(`Expected one packaged ${label}; found ${names.length}. Rebuild @vnpykit/cli.`);
   return resolve(root, names[0] as string);
 }
 
@@ -164,10 +164,10 @@ function escapeHtml(value: string): string {
 }
 
 function html(title: string): string {
-  return `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'">\n<title>${escapeHtml(title)}</title>\n</head>\n<body>\n<main><div id="visionpy-status" role="status">Loading Python application…</div><div id="visionpy-app"></div></main>\n<script type="module" src="./app.js"></script>\n</body>\n</html>\n`;
+  return `<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width,initial-scale=1">\n<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; worker-src 'self' blob:; connect-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'">\n<title>${escapeHtml(title)}</title>\n</head>\n<body>\n<main><div id="vnpykit-status" role="status">Loading Python application…</div><div id="vnpykit-app"></div></main>\n<script type="module" src="./app.js"></script>\n</body>\n</html>\n`;
 }
 
 function browserEntry(assetsPath: string, wheelName: string, liveReload: boolean): string {
-  const reload = liveReload ? `\nconst reload = new EventSource(new URL("__visionpy_reload", document.baseURI));\nreload.onmessage = () => location.reload();\n` : "";
-  return `import { mountVisionPy } from "./${assetsPath}/runtime/visionpy.js";\nconst mount = document.querySelector("#visionpy-app");\nconst status = document.querySelector("#visionpy-status");\nif (!(mount instanceof HTMLElement) || !(status instanceof HTMLElement)) throw new Error("VisionPy host elements are missing");\nconst app = mountVisionPy({\n  mount,\n  python: { kind: "url", url: new URL("./app.py", location.href).href },\n  assetsBaseUrl: new URL("./${assetsPath}/", location.href).href,\n  wheelFileName: ${JSON.stringify(wheelName)},\n  startupTimeoutMs: 120000,\n});\napp.onError((error) => { status.textContent = error.code + ": " + error.message; });\ntry { await app.ready; status.textContent = "VisionPy application ready."; }\ncatch (error) { status.textContent = error instanceof Error ? error.message : "VisionPy failed to start."; }\nwindow.addEventListener("pagehide", () => { void app.dispose(); }, { once: true });${reload}`;
+  const reload = liveReload ? `\nconst reload = new EventSource(new URL("__vnpykit_reload", document.baseURI));\nreload.onmessage = () => location.reload();\n` : "";
+  return `import { mountVNPyKit } from "./${assetsPath}/runtime/vnpykit.js";\nconst mount = document.querySelector("#vnpykit-app");\nconst status = document.querySelector("#vnpykit-status");\nif (!(mount instanceof HTMLElement) || !(status instanceof HTMLElement)) throw new Error("VNPyKit host elements are missing");\nconst app = mountVNPyKit({\n  mount,\n  python: { kind: "url", url: new URL("./app.py", location.href).href },\n  assetsBaseUrl: new URL("./${assetsPath}/", location.href).href,\n  wheelFileName: ${JSON.stringify(wheelName)},\n  startupTimeoutMs: 120000,\n});\napp.onError((error) => { status.textContent = error.code + ": " + error.message; });\ntry { await app.ready; status.textContent = "VNPyKit application ready."; }\ncatch (error) { status.textContent = error instanceof Error ? error.message : "VNPyKit failed to start."; }\nwindow.addEventListener("pagehide", () => { void app.dispose(); }, { once: true });${reload}`;
 }

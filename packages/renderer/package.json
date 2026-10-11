@@ -1,5 +1,5 @@
 {
-  "name": "@visionpy/renderer",
+  "name": "@vnpykit/renderer",
   "version": "0.1.0-alpha.1",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "dependencies": { "@visionpy/protocol": "workspace:*" },
+  "dependencies": { "@vnpykit/protocol": "workspace:*" },
   "license": "Apache-2.0",
   "engines": { "node": ">=24.0.0" }
 }

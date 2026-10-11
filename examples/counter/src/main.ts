@@ -1,4 +1,4 @@
-import { createVisionPyApp, type VisionPyAppHandle } from "@visionpy/runtime-pyodide";
+import { createVNPyKitApp, type VNPyKitAppHandle } from "@vnpykit/runtime-pyodide";
 import "./styles.css";
 
 const statusElement = requiredElement("status");
@@ -9,7 +9,7 @@ const scratchMount = requiredElement("scratch");
 const assetsBaseUrl = new URL(import.meta.env.BASE_URL, location.origin).href;
 
 let first = mountCounter(firstMount);
-let second: VisionPyAppHandle;
+let second: VNPyKitAppHandle;
 
 async function ready(): Promise<void> {
   try {
@@ -19,13 +19,13 @@ async function ready(): Promise<void> {
     statusElement.textContent = "Two Python applications are ready.";
     renderMetrics();
   } catch (error) {
-    statusElement.textContent = error instanceof Error ? error.message : "VisionPy failed to start.";
+    statusElement.textContent = error instanceof Error ? error.message : "VNPyKit failed to start.";
     throw error;
   }
 }
 
-function mountCounter(mount: HTMLElement): VisionPyAppHandle {
-  const app = createVisionPyApp({
+function mountCounter(mount: HTMLElement): VNPyKitAppHandle {
+  const app = createVNPyKitApp({
     mount,
     python: { kind: "url", url: new URL("app.py", assetsBaseUrl).href },
     assetsBaseUrl,
@@ -36,16 +36,16 @@ function mountCounter(mount: HTMLElement): VisionPyAppHandle {
   return app;
 }
 
-function watchErrors(app: VisionPyAppHandle): void {
+function watchErrors(app: VNPyKitAppHandle): void {
   app.onError((error) => {
     statusElement.textContent = `${error.code}: ${error.message}`;
   });
 }
 
-function mountSource(source: string): VisionPyAppHandle {
+function mountSource(source: string): VNPyKitAppHandle {
   const mount = document.createElement("div");
   scratchMount.append(mount);
-  return createVisionPyApp({
+  return createVNPyKitApp({
     mount,
     python: { kind: "source", source },
     assetsBaseUrl,
@@ -76,15 +76,15 @@ function requiredElement(id: string): HTMLElement {
 
 declare global {
   interface Window {
-    visionpyDemo: {
+    vnpykitDemo: {
       ready: Promise<void>;
-      getFirst(): VisionPyAppHandle;
-      getSecond(): VisionPyAppHandle;
+      getFirst(): VNPyKitAppHandle;
+      getSecond(): VNPyKitAppHandle;
       remountFirst(): Promise<void>;
-      mountSource(source: string): VisionPyAppHandle;
+      mountSource(source: string): VNPyKitAppHandle;
     };
   }
 }
 
 const readyPromise = ready();
-window.visionpyDemo = { ready: readyPromise, getFirst: () => first, getSecond: () => second, remountFirst, mountSource };
+window.vnpykitDemo = { ready: readyPromise, getFirst: () => first, getSecond: () => second, remountFirst, mountSource };

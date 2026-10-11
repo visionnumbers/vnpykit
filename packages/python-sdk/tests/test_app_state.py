@@ -6,9 +6,9 @@ from typing import cast
 
 import pytest
 
-from visionpy import App, LifecycleError, State, _bridge
-from visionpy.exceptions import InvalidPropertyError, VisionPyRuntimeError
-from visionpy.ui import Button, Column, Container, Text
+from vnpykit import App, LifecycleError, State, _bridge
+from vnpykit.exceptions import InvalidPropertyError, VNPyKitRuntimeError
+from vnpykit.ui import Button, Column, Container, Text
 
 
 @pytest.fixture(autouse=True)
@@ -174,13 +174,13 @@ def test_invalid_callback_and_stale_generation_are_rejected() -> None:
     app, _ = counter_app()
     app.run()
     _bridge.dispatch_json(host_message(0, "RENDER_ACK", {"ackSeq": 1}))
-    with pytest.raises(VisionPyRuntimeError, match="unknown"):
+    with pytest.raises(VNPyKitRuntimeError, match="unknown"):
         _bridge.dispatch_json(
             host_message(1, "USER_EVENT", {"handlerId": "99", "nodeId": "4", "event": "click"})
         )
     stale = json.loads(host_message(1, "USER_EVENT", {}))
     stale["generation"] = "old_generation"
-    with pytest.raises(VisionPyRuntimeError, match="stale"):
+    with pytest.raises(VNPyKitRuntimeError, match="stale"):
         _bridge.dispatch_json(json.dumps(stale))
 
 
@@ -192,7 +192,7 @@ def test_dispose_detaches_bindings_and_callbacks() -> None:
     before = len(messages)
     count.set(10)
     assert len(messages) == before
-    with pytest.raises(VisionPyRuntimeError, match="not accepting"):
+    with pytest.raises(VNPyKitRuntimeError, match="not accepting"):
         app.dispatch_event({"handlerId": "1", "nodeId": "4", "event": "click"})
 
 

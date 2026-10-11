@@ -3,13 +3,13 @@ requires = ["hatchling==1.32.4"]
 build-backend = "hatchling.build"
 
 [project]
-name = "visionpy"
+name = "vnpykit"
 version = "0.1.0a1"
 description = "Browser-native Python application framework"
 readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
-authors = [{ name = "VisionPy contributors" }]
+authors = [{ name = "VNPyKit contributors" }]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
   "License :: OSI Approved :: Apache Software License",
@@ -28,10 +28,10 @@ dev = [
 ]
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/visionpy"]
+packages = ["src/vnpykit"]
 
 [tool.hatch.build.targets.sdist]
-include = ["src/visionpy", "tests", "README.md", "pyproject.toml"]
+include = ["src/vnpykit", "tests", "README.md", "pyproject.toml"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

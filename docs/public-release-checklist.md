@@ -7,6 +7,7 @@ release. A local checkpoint commit does not authorize publishing.
 
 - [ ] Run `python scripts/scan-secrets.py` and an independent full-history scanner
   such as Gitleaks after a public remote exists.
+- [x] Run the repository scanner after the VNPyKit migration (139 files; passed).
 - [ ] Inspect `git status --short --ignored` and `git ls-files`; confirm virtual
   environments, caches, `node_modules`, build output, Playwright output, and copied
   Pyodide assets are excluded.
@@ -18,14 +19,17 @@ release. A local checkpoint commit does not authorize publishing.
 
 ## Legal and dependency review
 
-- [ ] Resolve the outstanding VisionPy name, package-name, domain, and trademark
-  checks recorded in ADR-0001 before public branding or publication.
+- [x] Record the owner-approved VNPyKit engineering identity in ADR-0008.
+- [ ] Complete VNPyKit domain and trademark clearance before public publication.
 - [ ] Confirm project copyright ownership and replace the placeholder Apache-2.0
   appendix text only if counsel or the owner requires an explicit notice.
 - [ ] Review `THIRD_PARTY_NOTICES.md`, dependency licenses, lockfiles, and vendored
   artifact hashes; retain upstream license files and source links.
 - [ ] Run `corepack pnpm audit --audit-level high` and the Python dependency audit
   chosen for the release process.
+- [x] M3.2 local audit: pnpm reported no known vulnerabilities; the clean Python
+  environment had no broken requirements and the SDK declares zero runtime
+  dependencies.
 
 ## Security and release operations
 
@@ -55,11 +59,10 @@ block a local source checkpoint.
 - [x] Generated production output uses a separate same-origin Worker and restrictive
   CSP; no floating runtime dependency or CDN URL is emitted.
 - [x] Registry identity conflicts and candidate names are recorded in ADR-0004.
-- [ ] Resolve ADR-0007's VNForge conflict and select an approved public
-  distribution/npm identity. M3.2 is blocked and no rename was performed.
-- [ ] Obtain explicit owner selection of VNStack or VNPyKit after reviewing the
-  M3.2 evidence. For the selected name, demonstrate control of the npm scope and
-  GitHub owner; resolve exact domain ownership and documented confusion risks.
+- [x] Obtain explicit owner selection of VNPyKit and complete the local package,
+  import, CLI, npm, runtime, fixture, and documentation migration.
+- [ ] Demonstrate control of the `@vnpykit` npm scope and the
+  `visionnumbers/vnpykit` GitHub target before publication or push.
 - [ ] Complete a qualified word-mark search in intended territories and relevant
   software/service classes. Registry and RDAP 404 responses are not trademark
   clearance or reservations.

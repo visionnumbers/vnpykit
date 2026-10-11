@@ -1,6 +1,6 @@
-# visionpy Python SDK
+# vnpykit Python SDK
 
-This pure-Python package supplies the VisionPy application model, reactive state,
+This pure-Python package supplies the VNPyKit application model, reactive state,
 controlled forms, typed DOM-free events, callback ownership, snapshot serialization,
 property patches, protocol constants, and error contracts. Browser DOM and Pyodide
 loading remain in the TypeScript packages.

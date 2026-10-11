@@ -3,8 +3,8 @@ from __future__ import annotations
 import json
 from typing import cast
 
-from visionpy import App, ChangeEvent, InputEvent, State, _bridge
-from visionpy.ui import Button, Checkbox, Column, Row, Text, TextInput
+from vnpykit import App, ChangeEvent, InputEvent, State, _bridge
+from vnpykit.ui import Button, Checkbox, Column, Row, Text, TextInput
 
 
 def install_capture() -> list[dict[str, object]]:

@@ -2,8 +2,8 @@
 
 ## Boot and protocol flow
 
-1. `createVisionPyApp` synchronously creates a handle, renderer root, Worker, and dedicated `MessageChannel`.
-2. The Worker imports locally served Pyodide 314.0.7, loads local micropip 0.11.1, and installs the exact locally built VisionPy wheel.
+1. `createVNPyKitApp` synchronously creates a handle, renderer root, Worker, and dedicated `MessageChannel`.
+2. The Worker imports locally served Pyodide 314.0.7, loads local micropip 0.11.1, and installs the exact locally built VNPyKit wheel.
 3. The Worker installs the JSON bridge and emits `RUNTIME_READY`.
 4. Explicit Python source executes. `App.run()` emits one `UI_SNAPSHOT`.
 5. The host validates and mounts the snapshot, returns `RENDER_ACK`, and resolves `ready`.
@@ -23,7 +23,7 @@ pyodide/pyodide.asm.wasm
 pyodide/python_stdlib.zip
 pyodide/pyodide-lock.json
 pyodide/micropip-0.11.1-py3-none-any.whl
-wheels/visionpy-0.1.0a1-py3-none-any.whl
+wheels/vnpykit-0.1.0a1-py3-none-any.whl
 ```
 
 The counter example prepares these files from locked dependencies and the local wheel build.
@@ -50,4 +50,4 @@ One local Windows 11 / Chromium 156 run on 2026-10-10 measured:
 | Create to first rendered snapshot | 22,289 ms | 22,845 ms |
 | Last sampled event-to-patch latency | 8.7 ms | 21.6 ms |
 
-These are diagnostic observations from the final verification run, not thresholds or benchmark claims. The Vite build reported a 17.78 kB host JS chunk, 5.03 kB Worker JS chunk, and 0.54 kB CSS. The locally served Pyodide asset directory was 13,994,768 bytes; the VisionPy wheel was 11,683 bytes. Device, browser cache, concurrent startup, and filesystem speed materially affect the timings.
+These are diagnostic observations from the final verification run, not thresholds or benchmark claims. The Vite build reported a 17.78 kB host JS chunk, 5.03 kB Worker JS chunk, and 0.54 kB CSS. The locally served Pyodide asset directory was 13,994,768 bytes; the VNPyKit wheel was 11,683 bytes. Device, browser cache, concurrent startup, and filesystem speed materially affect the timings.

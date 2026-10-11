@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "vitest";
 import { createRenderer } from "../src/index.js";
-import type { PatchBatch, UiSnapshot } from "@visionpy/protocol";
+import type { PatchBatch, UiSnapshot } from "@vnpykit/protocol";
 
 function snapshot(appId = "app_1", generation = "generation_1"): UiSnapshot {
   return {

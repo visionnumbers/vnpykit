@@ -3,7 +3,7 @@
 Build with the public URL prefix that will contain the application:
 
 ```shell
-visionpy build app.py --out-dir dist --base /products/demo/
+vnpykit build app.py --out-dir dist --base /products/demo/
 ```
 
 Upload the complete `dist` directory without renaming its internal files. Configure

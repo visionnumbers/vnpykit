@@ -5,15 +5,15 @@ from importlib.metadata import version
 
 import pytest
 
-import visionpy
-from visionpy.exceptions import ProtocolMismatchError
-from visionpy.protocol import make_envelope
+import vnpykit
+from vnpykit.exceptions import ProtocolMismatchError
+from vnpykit.protocol import make_envelope
 
 
 def test_package_is_importable_and_versioned() -> None:
-    assert visionpy.__version__ == "0.1.0a1"
-    assert version("visionpy") == visionpy.__version__
-    assert visionpy.PROTOCOL_MAJOR == 1
+    assert vnpykit.__version__ == "0.1.0a1"
+    assert version("vnpykit") == vnpykit.__version__
+    assert vnpykit.PROTOCOL_MAJOR == 1
 
 
 def test_error_contract_has_stable_code_and_safe_details() -> None:

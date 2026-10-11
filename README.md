@@ -1,19 +1,20 @@
-# VisionPy
+# VNPyKit
 
-VisionPy is a browser-native Python application framework. Its M1 runtime executes the real Python SDK in a dedicated Pyodide Worker, sends validated protocol v1 snapshots and property patches, and renders an allowlisted accessible DOM tree on the main thread.
+VNPyKit is a browser-native Python application framework. Its M1 runtime executes the real Python SDK in a dedicated Pyodide Worker, sends validated protocol v1 snapshots and property patches, and renders an allowlisted accessible DOM tree on the main thread.
 
 The M2 widget slice is `App`, `State`, `Container`, `Column`, `Row`, `Text`,
 `Button`, `TextInput`, and `Checkbox`. Forms use typed Worker events and controlled
 Python state. Dynamic tree mutation, graphics, games, and arbitrary package
 installation remain deferred.
 
-M3 adds a provisional Node.js CLI, reproducible static-site assembly, and a
-framework-independent TypeScript embedding API. Package identity is unresolved, so
-all artifacts remain local and private.
+M3 adds a Node.js CLI, reproducible static-site assembly, and a
+framework-independent TypeScript embedding API. The owner selected VNPyKit as the
+public engineering identity in M3.2. All artifacts remain local and private until
+external namespace, legal, and publication gates are complete.
 
 ```python
-from visionpy import App, State
-from visionpy.ui import Button, Checkbox, Column, Text, TextInput
+from vnpykit import App, State
+from vnpykit.ui import Button, Checkbox, Column, Text, TextInput
 
 app = App(title="Form")
 name = State("")
@@ -54,9 +55,9 @@ The provisional CLI is distributed as an npm executable and requires Node.js 24+
 After building and locally packing the repository packages:
 
 ```shell
-visionpy create hello-app
-visionpy run hello-app/app.py
-visionpy build hello-app/app.py --out-dir dist --base /demo/
+vnpykit create hello-app
+vnpykit run hello-app/app.py
+vnpykit build hello-app/app.py --out-dir dist --base /demo/
 ```
 
 The build contains pinned Pyodide and Python assets and runs from an ordinary static
@@ -76,7 +77,7 @@ corepack pnpm dev:counter
 ```
 
 Open `http://127.0.0.1:4173`. The page starts two independent Python counter/form
-applications. Runtime files and the VisionPy wheel are served locally;
+applications. Runtime files and the VNPyKit wheel are served locally;
 the demo does not depend on CodeLab or a CDN at runtime.
 
 See [getting started](docs/getting-started.md), [embedding](docs/embedding.md),
@@ -87,7 +88,7 @@ and [ADR-0003](docs/adr/ADR-0003-m2-decisions.md).
 
 ## Troubleshooting
 
-- `Missing ... visionpy-0.1.0a1-py3-none-any.whl`: run the Python build command before starting Vite.
+- `Missing ... vnpykit-0.1.0a1-py3-none-any.whl`: run the Python build command before starting Vite.
 - `Failed to fetch` during boot: confirm `assetsBaseUrl` points to a directory containing `pyodide/` and `wheels/`, and serve through HTTP rather than `file://`.
 - `PROTOCOL_MISMATCH` or `stale worker generation`: rebuild all packages and reload the page without preserving an old Worker.
 - Startup timeout: Pyodide cold start is device-dependent. Increase `startupTimeoutMs` for development and inspect the typed `onError` event.
@@ -98,5 +99,5 @@ A Web Worker is an execution and responsiveness boundary, not a hardened sandbox
 
 ## License
 
-Apache-2.0. ADR-0004 records the occupied PyPI name and candidate identities. No
-artifact has been published.
+Apache-2.0. ADR-0008 records the migration from the historical VisionPy development
+codename. No artifact has been published.

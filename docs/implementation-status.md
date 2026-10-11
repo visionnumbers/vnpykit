@@ -5,15 +5,15 @@
 Status: implemented locally; release and publication are not authorized.
 
 - Repository governance, workspaces, exact tool pins, CI, lint, tests, types, and package builds are configured.
-- `visionpy` is a minimal pure-Python, typed, import-safe SDK package.
-- `@visionpy/protocol` defines every M0 wire message, strict validators, bounded snapshot/patch/event checks, stable protocol errors, session sequencing, ownership checks, and event backpressure helpers.
-- `@visionpy/renderer` and `@visionpy/runtime-pyodide` are buildable boundary packages only.
+- `vnpykit` is a minimal pure-Python, typed, import-safe SDK package.
+- `@vnpykit/protocol` defines every M0 wire message, strict validators, bounded snapshot/patch/event checks, stable protocol errors, session sequencing, ownership checks, and event backpressure helpers.
+- `@vnpykit/renderer` and `@vnpykit/runtime-pyodide` are buildable boundary packages only.
 - RFC source files are unchanged.
 
 Preserved RFC SHA-256 values recorded at implementation time:
 
-- `VisionPy_RFC_0001_Architecture.md`: `3CAAB54823CBF7B07D99D3852E345B7CA3BCD626D88B2734429BB1B26A9D4C34`
-- `VisionPy_v0.1_Implementation_Blueprint.md`: `68FD18253499260518BCC0E97DFC3B503BEE968DB76789193428C63E89AEBC5E`
+- `VNPyKit_RFC_0001_Architecture.md`: `3CAAB54823CBF7B07D99D3852E345B7CA3BCD626D88B2734429BB1B26A9D4C34`
+- `VNPyKit_v0.1_Implementation_Blueprint.md`: `68FD18253499260518BCC0E97DFC3B503BEE968DB76789193428C63E89AEBC5E`
 
 Deferred to M1 and later: Python `App`/widgets/state, Worker boot, DOM renderer, callback round trips, browser examples, Playwright, CLI, Pyodide pin, graphics, and game APIs.
 
@@ -27,7 +27,7 @@ Status: implemented and verified locally on 2026-10-10.
 - VP-006: ShadowRoot-scoped safe DOM renderer, Text/Button/Column/Container, delegated click normalization, atomic property patch validation, and instance-scoped teardown.
 - VP-007: standalone two-counter example, actual wheel import in Pyodide, Chromium interaction/isolation/dispose-remount/stop/error-recovery tests.
 
-Verified compatibility: VisionPy `0.1.0a1` on Pyodide `314.0.7`, Python `3.14.2`, micropip `0.11.1`, Playwright `1.64.0`, Chromium `156.0.8078.4`.
+Verified compatibility: VNPyKit `0.1.0a1` on Pyodide `314.0.7`, Python `3.14.2`, micropip `0.11.1`, Playwright `1.64.0`, Chromium `156.0.8078.4`.
 
 Built wheel SHA-256 for this M1 verification: `3CDEE56272A73826500F9893DA68FB02E402B0660D0A63872AAFEB7BB967DB73`.
 
@@ -68,8 +68,9 @@ Status: implemented locally on 2026-10-11; publication remains blocked.
 - External acceptance: a clean system-temp consumer installed local tarballs
   without workspace aliases. The final serialized matrix passed production form,
   dual-instance, React StrictMode, and Vue cases in Chromium, Firefox, and WebKit.
-- Package identity: PyPI `visionpy` and GitHub `VisionPy` conflict; ADR-0004 keeps
-  all npm packages private and defers public naming.
+- Package identity: VNPyKit is the owner-approved engineering identity. All npm
+  packages remain private and external namespace/trademark checks remain release
+  gates under ADR-0008.
 - Performance: measured with a local no-store static server. Detailed current
   results and attribution limits are recorded in `docs/m3-distribution.md`.
 - Stress: 100 real Chromium dispose/remount cycles passed in 9.6 minutes; ten
@@ -78,11 +79,11 @@ Status: implemented locally on 2026-10-11; publication remains blocked.
   contact, manual screen-reader/high-contrast audit, full-history secret scan after
   a remote exists, and explicit publication authorization.
 
-M3 distribution and browser acceptance is PASS: the documentation-final packed
-artifacts passed all 12 external cases serially in 2.7 minutes, and WebKit+React passed a subsequent
-isolated repeat. M4 is not ready because M3.2 package migration is blocked by
-ADR-0007 and the manual accessibility and publication gates remain open. Graphics,
-game APIs, and hostile-code isolation remain out of scope.
+M3 distribution and browser acceptance was PASS before the identity migration:
+the documentation-final packed artifacts passed all 12 external cases serially in
+2.7 minutes, and WebKit+React passed a subsequent isolated repeat. M3.2 re-runs
+the same gates using final locally packed VNPyKit artifacts. Graphics, game APIs,
+and hostile-code isolation remain out of scope.
 
 ### M3.1A and M3.1B follow-up
 
@@ -97,16 +98,35 @@ game APIs, and hostile-code isolation remain out of scope.
   npm endpoints returning 404. No fallback was selected and ADR-0008 was not
   created.
 
-### M3.2 identity gate
+### M3.2 VNPyKit migration
 
 - Local M3 acceptance checkpoint: `3d80149a2572f07935e06a228fe987be0394a1a8`.
 - The checkpoint passed Ruff, strict mypy, 25 Python tests, ESLint, TypeScript
   checks/builds, 26 Vitest tests, and the serialized 12-case external browser
   matrix before it was created.
-- Current VNStack verification found an occupied exact GitHub user, an existing
-  npm scope endpoint with unproved control, and a registered `vnstack.com` domain.
-- VNPyKit exact package endpoints were empty, but npm/GitHub control is not
-  secured and the established `vn.py`/`vnpy` framework creates a material
-  confusion question.
-- No identity was approved, no migration was performed, and ADR-0008 remains
-  intentionally absent. See ADR-0007 and `docs/m3.2-identity-clearance.md`.
+- The owner explicitly approved VNPyKit for the complete local engineering
+  migration. The Python distribution/import is `vnpykit`, the executable is
+  `vnpykit`, and TypeScript packages use private `@vnpykit/*` identities.
+- Protocol major 1, message shapes, lifecycle ownership, Worker isolation, direct
+  wheel loading, renderer safety, and form behavior are unchanged.
+- ADR-0008 records the decision. npm scope ownership, the target GitHub
+  organization/repository, domain choice, trademark review, and publication
+  authorization remain external release gates rather than local-refactor gates.
+- Final Python validation: Ruff passed, strict mypy passed for 14 source files,
+  and all 25 pytest cases passed. The wheel and sdist built as
+  `vnpykit-0.1.0a1-py3-none-any.whl` and `vnpykit-0.1.0a1.tar.gz`; a clean venv
+  imported `vnpykit` and found no `visionpy` module.
+- Final TypeScript validation: frozen pnpm install, ESLint, strict typechecks,
+  builds, and all 26 Vitest cases passed. Local tarballs for all five
+  `@vnpykit/*` packages installed in an independent 46-package consumer with zero
+  reported vulnerabilities.
+- Final browser validation: all 12 packed-artifact external cases passed in 3.4
+  minutes across Chromium, Firefox, and WebKit 27.2. The deeper browser suite had
+  10 applicable passes and 17 intentional skips; its Chromium 30-cycle
+  generation test passed. The explicit 100-cycle Chromium stress test passed in
+  9.6 minutes with two live roots and a stable coarse heap at every sample.
+- Release artifact wheel SHA-256:
+  `FB991A48FF50F2E10AC683D340A438B7C3A533B194608909E55B2BAF086FB3CF`.
+- Active source, manifests, archive paths, starter output, and deployable output
+  contain no obsolete VisionPy package/import/CLI references. Remaining uses are
+  limited to historical RFC/ADR content, migration evidence, and attribution.

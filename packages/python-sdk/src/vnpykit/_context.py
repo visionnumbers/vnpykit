@@ -11,8 +11,8 @@ if TYPE_CHECKING:
     from .app import App
     from .component import Component
 
-_current_app: ContextVar[App | None] = ContextVar("visionpy_current_app", default=None)
-_current_parent: ContextVar[Component | None] = ContextVar("visionpy_current_parent", default=None)
+_current_app: ContextVar[App | None] = ContextVar("vnpykit_current_app", default=None)
+_current_parent: ContextVar[Component | None] = ContextVar("vnpykit_current_parent", default=None)
 
 
 def require_app() -> App:

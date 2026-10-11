@@ -2,7 +2,7 @@ import { expect, test, type Page } from "@playwright/test";
 
 test("CLI production output works from a nested static path", async ({ page }) => {
   await navigate(page, "/nested/app/");
-  await expect(page.locator("#visionpy-status")).toHaveText("VisionPy application ready.", { timeout: 120_000 });
+  await expect(page.locator("#vnpykit-status")).toHaveText("VNPyKit application ready.", { timeout: 120_000 });
   await page.getByLabel("Name").fill("Ada");
   await page.getByLabel("Accept").check();
   await page.getByRole("button", { name: "Submit form" }).click();
@@ -20,44 +20,44 @@ test("plain host mounts two isolated apps and disposes them", async ({ page, bro
     })());
   });
   await navigate(page, "/");
-  await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).visionpyAcceptance.ready);
-  await expect(page.locator("#plain-one").getByText("Hello VisionPy")).toBeVisible();
-  await expect(page.locator("#plain-two").getByText("Hello VisionPy")).toBeVisible();
+  await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).vnpykitAcceptance.ready);
+  await expect(page.locator("#plain-one").getByText("Hello VNPyKit")).toBeVisible();
+  await expect(page.locator("#plain-two").getByText("Hello VNPyKit")).toBeVisible();
   await page.locator("#plain-one").getByLabel("Name").fill("Grace");
   await expect(page.locator("#plain-two").getByLabel("Name")).toHaveValue("");
   const benchmark = await page.evaluate(() => {
-    const host = (globalThis as unknown as AcceptanceWindow).visionpyAcceptance;
+    const host = (globalThis as unknown as AcceptanceWindow).vnpykitAcceptance;
     return { cold: host.first.metrics, warm: host.second.metrics };
   });
   console.log(`M3_BENCHMARK ${JSON.stringify({ ...benchmark, resources: await Promise.all(resourceSamples) })}`);
-  await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).visionpyAcceptance.disposeAll());
-  expect(await page.locator("[data-visionpy-root]").count()).toBe(0);
+  await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).vnpykitAcceptance.disposeAll());
+  expect(await page.locator("[data-vnpykit-root]").count()).toBe(0);
 });
 
 test("React StrictMode mounts, cleans up the abandoned Worker, and unmounts", async ({ page, browser }) => {
   const lifecycle: string[] = [];
   page.on("console", (message) => {
-    if (message.text().includes("VISIONPY_")) lifecycle.push(message.text());
+    if (message.text().includes("VNPYKIT_")) lifecycle.push(message.text());
   });
   await navigate(page, "/react.html");
   await page.waitForFunction(() => (globalThis as unknown as AcceptanceWindow).reactReady !== undefined);
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).reactReady);
-  await expect(page.getByText("Hello VisionPy")).toBeVisible();
+  await expect(page.getByText("Hello VNPyKit")).toBeVisible();
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).reactRoot.unmount());
-  await expect(page.locator("[data-visionpy-root]")).toHaveCount(0);
+  await expect(page.locator("[data-vnpykit-root]")).toHaveCount(0);
   console.log(`M3_REACT_LIFECYCLE ${JSON.stringify({ browserVersion: browser.version(), lifecycle })}`);
 });
 
 test("Vue mounts and unmounts the framework-independent API", async ({ page }) => {
   await navigate(page, "/vue.html");
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).vueReady);
-  await expect(page.getByText("Hello VisionPy")).toBeVisible();
+  await expect(page.getByText("Hello VNPyKit")).toBeVisible();
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).vueRoot.unmount());
-  await expect(page.locator("[data-visionpy-root]")).toHaveCount(0);
+  await expect(page.locator("[data-vnpykit-root]")).toHaveCount(0);
 });
 
 interface AcceptanceWindow {
-  visionpyAcceptance: {
+  vnpykitAcceptance: {
     ready: Promise<unknown>;
     first: { metrics: Record<string, number> };
     second: { metrics: Record<string, number> };

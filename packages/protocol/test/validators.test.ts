@@ -57,7 +57,7 @@ describe("protocol envelope", () => {
   });
 
   it("rejects protocol mismatches, unknown discriminators, and extra keys", () => {
-    expect(() => parseEnvelope({ ...envelope("STOP_REQUEST", {}), protocol: "visionpy/1" })).toThrowError(ProtocolValidationError);
+    expect(() => parseEnvelope({ ...envelope("STOP_REQUEST", {}), protocol: "vnpykit/1" })).toThrowError(ProtocolValidationError);
     expect(() => parseEnvelope(envelope("ui.snapshot", {}))).toThrow(/unknown message type/u);
     expect(() => parseEnvelope({ ...envelope("STOP_REQUEST", {}), requestId: "old-shape" })).toThrow(/unexpected key/u);
   });

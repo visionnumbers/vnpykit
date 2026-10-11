@@ -30,7 +30,7 @@ export async function runDevServer(options: DevServerOptions): Promise<DevServer
   const basePath = normalizeBasePath(options.basePath ?? "/");
   const work = resolve(options.workingDirectory ?? process.cwd());
   const entry = resolve(work, options.entry);
-  const outputDirectory = resolve(work, ".visionpy/dev");
+  const outputDirectory = resolve(work, ".vnpykit/dev");
   await buildStaticApp({ entry, outDir: outputDirectory, basePath, ...(options.assetsPath === undefined ? {} : { assetsPath: options.assetsPath }), liveReload: true });
 
   const clients = new Set<ServerResponse>();
@@ -58,11 +58,11 @@ export async function runDevServer(options: DevServerOptions): Promise<DevServer
           await copyFile(entry, resolve(outputDirectory, "app.py"));
           for (const client of clients) client.write("data: reload\n\n");
         } catch (error) {
-          process.stderr.write(`VisionPy reload failed: ${error instanceof Error ? error.message : "unknown error"}\n`);
+          process.stderr.write(`VNPyKit reload failed: ${error instanceof Error ? error.message : "unknown error"}\n`);
         }
       }
     } catch (error) {
-      if (!closed && (!(error instanceof Error) || error.name !== "AbortError")) process.stderr.write(`VisionPy watcher failed: ${error instanceof Error ? error.message : "unknown error"}\n`);
+      if (!closed && (!(error instanceof Error) || error.name !== "AbortError")) process.stderr.write(`VNPyKit watcher failed: ${error instanceof Error ? error.message : "unknown error"}\n`);
     }
   })();
 
@@ -85,7 +85,7 @@ async function serve(rawUrl: string, response: ServerResponse, root: string, bas
     const url = new URL(rawUrl, "http://localhost");
     if (!url.pathname.startsWith(basePath)) return respond(response, 404, "Not found");
     const relativePath = decodeURIComponent(url.pathname.slice(basePath.length));
-    if (relativePath === "__visionpy_reload") {
+    if (relativePath === "__vnpykit_reload") {
       response.writeHead(200, { "Content-Type": "text/event-stream", "Cache-Control": "no-store", Connection: "keep-alive" });
       response.write(": connected\n\n");
       clients.add(response);

@@ -12,7 +12,7 @@ from .exceptions import InvalidPropertyError
 if TYPE_CHECKING:
     from .component import Component, Scalar
 
-_active_binding: ContextVar[Binding | None] = ContextVar("visionpy_active_binding", default=None)
+_active_binding: ContextVar[Binding | None] = ContextVar("vnpykit_active_binding", default=None)
 
 
 class State[T]:

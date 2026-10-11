@@ -1,4 +1,4 @@
-"""VisionPy application lifecycle, tree ownership, and callbacks."""
+"""VNPyKit application lifecycle, tree ownership, and callbacks."""
 
 from __future__ import annotations
 
@@ -12,8 +12,8 @@ from uuid import uuid4
 
 from . import _bridge
 from ._context import pop_app, push_app
-from .events import ChangeEvent, ClickEvent, InputEvent, SubmitEvent, VisionPyEvent
-from .exceptions import LifecycleError, VisionPyRuntimeError
+from .events import ChangeEvent, ClickEvent, InputEvent, SubmitEvent, VNPyKitEvent
+from .exceptions import LifecycleError, VNPyKitRuntimeError
 from .protocol import MAX_NODES_PER_SNAPSHOT, MAX_PATCHES_PER_BATCH, MAX_TREE_DEPTH
 
 if TYPE_CHECKING:
@@ -35,7 +35,7 @@ class App:
     def __init__(
         self,
         *,
-        title: str = "VisionPy App",
+        title: str = "VNPyKit App",
         theme: Literal["system", "light", "dark"] = "system",
     ) -> None:
         if not isinstance(title, str) or len(title) > 200:
@@ -114,7 +114,7 @@ class App:
 
     def dispatch_event(self, payload: Mapping[str, object]) -> None:
         if self._status is not AppStatus.RUNNING:
-            raise VisionPyRuntimeError("app is not accepting events", code="DISPOSED")
+            raise VNPyKitRuntimeError("app is not accepting events", code="DISPOSED")
         handler_id = payload.get("handlerId")
         node_id = payload.get("nodeId")
         event = payload.get("event")
@@ -123,10 +123,10 @@ class App:
             or not isinstance(node_id, str)
             or not isinstance(event, str)
         ):
-            raise VisionPyRuntimeError("malformed event payload", code="INVALID_MESSAGE")
+            raise VNPyKitRuntimeError("malformed event payload", code="INVALID_MESSAGE")
         callback_record = self._callbacks.get(handler_id)
         if callback_record is None or callback_record[:2] != (node_id, event):
-            raise VisionPyRuntimeError("unknown or mismatched callback", code="UNKNOWN_HANDLER")
+            raise VNPyKitRuntimeError("unknown or mismatched callback", code="UNKNOWN_HANDLER")
         callback = callback_record[2]
         accepts_event = callback_record[3]
         typed_event = _typed_event(node_id, event, payload.get("value"))
@@ -137,7 +137,7 @@ class App:
             else:
                 callback()
         except Exception as error:
-            if not isinstance(error, VisionPyRuntimeError) or error.code != "REACTIVITY_LOOP":
+            if not isinstance(error, VNPyKitRuntimeError) or error.code != "REACTIVITY_LOOP":
                 self._report_callback_error(error)
         finally:
             self._event_depth -= 1
@@ -196,7 +196,7 @@ class App:
                 if steps > 100:
                     self._reactive_queue.clear()
                     self._reactive_enqueued.clear()
-                    error = VisionPyRuntimeError(
+                    error = VNPyKitRuntimeError(
                         "reactive update cycle exceeded 100 evaluations",
                         code="REACTIVITY_LOOP",
                     )
@@ -219,7 +219,7 @@ class App:
         current.update(props)
         if len(self._pending_patches) > MAX_PATCHES_PER_BATCH:
             self._pending_patches.clear()
-            raise VisionPyRuntimeError(
+            raise VNPyKitRuntimeError(
                 "patch count exceeds the protocol limit", code="INVALID_MESSAGE"
             )
         if self._event_depth == 0:
@@ -253,11 +253,11 @@ def _callback_accepts_event(callback: object) -> bool:
         if parameter.kind in {Parameter.POSITIONAL_ONLY, Parameter.POSITIONAL_OR_KEYWORD}
     )
     if len(positional) > 1:
-        raise TypeError("VisionPy callbacks accept zero or one positional event argument")
+        raise TypeError("VNPyKit callbacks accept zero or one positional event argument")
     return len(positional) == 1
 
 
-def _typed_event(node_id: str, event: str, value: object) -> VisionPyEvent:
+def _typed_event(node_id: str, event: str, value: object) -> VNPyKitEvent:
     if event == "click" and value is None:
         return ClickEvent(node_id)
     if event == "submit" and value is None:
@@ -268,4 +268,4 @@ def _typed_event(node_id: str, event: str, value: object) -> VisionPyEvent:
         return ChangeEvent(node_id, value)
     if event == "change" and isinstance(value, bool):
         return ChangeEvent(node_id, value)
-    raise VisionPyRuntimeError("event payload has an invalid typed value", code="INVALID_MESSAGE")
+    raise VNPyKitRuntimeError("event payload has an invalid typed value", code="INVALID_MESSAGE")
