@@ -44,15 +44,12 @@ export async function buildStaticApp(options: StaticBuildOptions): Promise<Build
   const embedRoot = dirname(embedEntry);
   const pyodideRoot = dirname(require.resolve("pyodide/package.json"));
   const wheel = await findSingleFile(resolve(packageRoot, "assets/wheels"), /^visionpy-.*-py3-none-any\.whl$/u, "VisionPy wheel");
-  const micropip = resolve(packageRoot, "assets/micropip-0.11.1-py3-none-any.whl");
-  await assertFile(micropip, "micropip wheel");
 
   await rm(outDir, { recursive: true, force: true });
   await mkdir(resolve(outDir, assetsPath, "runtime"), { recursive: true });
   await mkdir(resolve(outDir, assetsPath, "wheels"), { recursive: true });
   await cp(embedRoot, resolve(outDir, assetsPath, "runtime"), { recursive: true, force: true });
   await cp(pyodideRoot, resolve(outDir, assetsPath, "pyodide"), { recursive: true, force: true });
-  await copyFile(micropip, resolve(outDir, assetsPath, "pyodide", basename(micropip)));
   await copyFile(wheel, resolve(outDir, assetsPath, "wheels", basename(wheel)));
   await copyFile(entry, resolve(outDir, "app.py"));
   await writeFile(resolve(outDir, "index.html"), html(title), "utf8");

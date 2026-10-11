@@ -55,7 +55,8 @@ block a local source checkpoint.
 - [x] Generated production output uses a separate same-origin Worker and restrictive
   CSP; no floating runtime dependency or CDN URL is emitted.
 - [x] Registry identity conflicts and candidate names are recorded in ADR-0004.
-- [ ] Select and approve the public distribution/npm identity.
+- [ ] Resolve ADR-0007's VNForge conflict and select an approved public
+  distribution/npm identity. M3.2 is blocked and no rename was performed.
 - [ ] Perform manual screen-reader and high-contrast audits on supported platforms.
 - [ ] Configure private vulnerability reporting and release provenance before any
   public remote, package publication, or release.

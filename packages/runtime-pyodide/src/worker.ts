@@ -44,6 +44,10 @@ async function boot(init: WorkerInit): Promise<void> {
   let pyodide: PyodideLike | undefined;
   let dispatch: PyProxyFunction | undefined;
   let snapshotSent = false;
+  const startedAt = performance.now();
+  const trace = (stage: string): void => {
+    console.debug("VISIONPY_WORKER_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - startedAt });
+  };
 
   const post = (type: ProtocolMessage["type"], payload: Record<string, unknown>): void => {
     const message = parseEnvelope({ protocol: PROTOCOL_MAJOR, appId, generation, seq: workerSeq, type, payload });
@@ -58,17 +62,22 @@ async function boot(init: WorkerInit): Promise<void> {
     dispatch = undefined;
     if (pyodide !== undefined) {
       try { pyodide.runPython("import visionpy._bridge as _vp_bridge; _vp_bridge.dispose_transport()"); } catch { /* worker termination is the final cleanup boundary */ }
-      for (const name of ["_visionpy_send", "_visionpy_wheel_url", "_visionpy_app_id", "_visionpy_generation"]) pyodide.globals.delete(name);
+      for (const name of ["_visionpy_send", "_visionpy_app_id", "_visionpy_generation"]) pyodide.globals.delete(name);
     }
     port.close();
   };
 
   try {
+    trace("worker-module-bootstrap");
     const module = await import(/* @vite-ignore */ init.pyodideModuleUrl) as PyodideModule;
+    trace("pyodide-module-imported");
     pyodide = await module.loadPyodide({ indexURL: init.pyodideIndexUrl });
-    await pyodide.loadPackage("micropip");
-    pyodide.globals.set("_visionpy_wheel_url", init.wheelUrl);
-    await pyodide.runPythonAsync("import micropip\nawait micropip.install(_visionpy_wheel_url)");
+    trace("pyodide-initialized");
+    // The SDK wheel has no dependencies. Pyodide's URL-aware package loader
+    // installs a PEP 427 pure-Python wheel directly and avoids importing the
+    // full micropip resolver during every Worker startup.
+    await pyodide.loadPackage(init.wheelUrl);
+    trace("wheel-installed");
     pyodide.globals.set("_visionpy_app_id", appId);
     pyodide.globals.set("_visionpy_generation", generation);
     pyodide.globals.set("_visionpy_send", (serialized: string) => {
@@ -83,6 +92,7 @@ async function boot(init: WorkerInit): Promise<void> {
     if (!isPyProxyFunction(result)) throw new Error("Python bridge dispatch is unavailable");
     dispatch = result;
     post("RUNTIME_READY", { sdkVersion: "0.1.0a1", protocolMajor: PROTOCOL_MAJOR });
+    trace("runtime-ready-posted");
 
     port.addEventListener("message", (messageEvent: MessageEvent<unknown>) => {
       try {
@@ -102,9 +112,13 @@ async function boot(init: WorkerInit): Promise<void> {
     port.start();
 
     const source = init.python.kind === "source" ? init.python.source : await fetchPython(init.python.url);
+    trace("python-source-loaded");
     await pyodide.runPythonAsync(source);
+    trace("python-source-executed");
     if (!snapshotSent) throw new Error("Python source completed without calling App.run()");
+    trace("ui-snapshot-posted");
   } catch (error) {
+    trace("worker-boot-failed");
     postError(pyodide === undefined ? "BOOT_FAILED" : "PYTHON_EXCEPTION", error, pyodide === undefined ? "bootstrap" : "build", true);
   }
 }

@@ -5,6 +5,9 @@ export default defineConfig({
   timeout: 180_000,
   expect: { timeout: 30_000 },
   fullyParallel: false,
+  // Pyodide browser processes are memory intensive. Serialize the release
+  // matrix so a framework result is not coupled to host RAM contention.
+  workers: 1,
   reporter: "list",
   use: { baseURL: "http://127.0.0.1:4175", trace: "retain-on-failure" },
   webServer: { command: "node scripts/static-server.mjs", url: "http://127.0.0.1:4175", reuseExistingServer: false },

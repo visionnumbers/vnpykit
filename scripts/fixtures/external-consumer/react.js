@@ -7,13 +7,17 @@ globalThis.reactReady = undefined;
 function Host() {
   const container = useRef(null);
   useEffect(() => {
+    globalThis.console.debug("VISIONPY_REACT_LIFECYCLE", { stage: "effect-mount", at: globalThis.performance.now() });
     const app = mount(container.current);
     globalThis.reactApp = app;
     globalThis.reactReady = app.ready;
-    return () => { void app.dispose(); };
+    return () => {
+      globalThis.console.debug("VISIONPY_REACT_LIFECYCLE", { stage: "effect-cleanup", appId: app.appId, at: globalThis.performance.now() });
+      void app.dispose();
+    };
   }, []);
   return React.createElement("div", { id: "react-app", ref: container });
 }
 
 globalThis.reactRoot = createRoot(document.querySelector("#react-root"));
-globalThis.reactRoot.render(React.createElement(Host));
+globalThis.reactRoot.render(React.createElement(React.StrictMode, null, React.createElement(Host)));

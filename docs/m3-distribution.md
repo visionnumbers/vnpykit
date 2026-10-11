@@ -20,7 +20,7 @@ a security sandbox for hostile Python.
 
 The generated directory contains `index.html`, `app.js`, `app.py`,
 `visionpy-manifest.json`, runtime JavaScript, a separate Worker, Pyodide files,
-micropip, and the VisionPy wheel. The manifest records protocol 1, CLI and Pyodide
+and the VisionPy wheel. The manifest records protocol 1, CLI and Pyodide
 versions, deployment base, file sizes, SHA-256 hashes, and reproducible epoch.
 
 ## Verification conditions
@@ -34,7 +34,7 @@ CLI output are served by `scripts/static-server.mjs`.
 Chromium measurements on 2026-10-11 used a local no-store server, Pyodide 314.0.7,
 and two sequential app starts. Resource transfer is measured through Playwright
 request events; `runtimeReadyMs` includes WebAssembly initialization, stdlib load,
-micropip, and wheel installation. `firstRenderMs - runtimeReadyMs` covers source
+and wheel installation. `firstRenderMs - runtimeReadyMs` covers source
 fetch/execution, snapshot delivery, and first render. These aggregates do not claim
 separate CPU attribution for every Pyodide phase.
 
@@ -68,7 +68,7 @@ minutes. Forced-GC samples every ten cycles reported two live
 in that run but is not a native Worker/Python heap proof. The final instance
 rendered and remained interactive.
 
-## Outstanding browser gate
+## Browser acceptance history
 
 The exact final local tarballs passed 11 of 12 external-consumer cases. Chromium
 and Firefox passed all four cases. WebKit passed nested CLI output, the sequential
@@ -77,5 +77,16 @@ including an isolated rerun. Trace evidence showed successful delivery of React,
 the embed bundle, Worker, Pyodide, stdlib, WebAssembly, and micropip before the
 runtime stalled. The machine had 763,072 KiB free of 8,234,192 KiB physical memory
 at diagnosis and no stale Playwright process. An earlier WebKit run passed React in
-12.6 seconds, so memory pressure is a plausible factor but is not established as
-the cause. This unresolved gate makes M3 acceptance FAIL and blocks M4 readiness.
+12.6 seconds, so memory pressure was a plausible factor but was not then
+established as the cause.
+
+ADR-0006 adds stage-level evidence and an optimized direct-wheel path. On a later
+isolated WebKit run, Pyodide initialized at 35.568 seconds and the wheel installed
+at 53.905 seconds, but Python bridge import did not finish before the unchanged
+120-second budget. The host had 703.4 MiB free of 8,041.2 MiB.
+
+The documentation-final artifacts passed all 12 serialized external cases in 2.7
+minutes. WebKit 27.2 rendered the React StrictMode fixture at 10.858 seconds; an
+isolated repeat of the same runtime rendered at 11.020 seconds. The 120-second timeout was
+unchanged. M3 browser acceptance is therefore PASS. ADR-0007 still blocks the
+requested public-name migration and public release.

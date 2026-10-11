@@ -13,16 +13,16 @@ The wheel contains `micropip-0.11.1.dist-info/licenses/LICENSE` and the licenses
 for its vendored `packaging` code. Corresponding source is available from the
 [micropip 0.11.1 tag](https://github.com/pyodide/micropip/tree/0.11.1).
 
-The wheel is kept because the slim npm Pyodide distribution references micropip
-in its lock file but does not include that wheel. The standalone examples copy it
-into generated runtime assets; those generated copies are ignored by Git.
+The wheel is retained for reproducibility of the historical M1 verification. The
+current M3 CLI and Worker do not copy or load it; ADR-0006 uses Pyodide's direct
+loader for the dependency-free SDK wheel.
 
 ## M3 static runtime
 
 `@visionpy/cli` depends exactly on the npm package `pyodide@314.0.7` and copies its
 runtime files, package lock, and upstream license into generated static output. The
-CLI also includes the unmodified micropip wheel above and the locally built
-Apache-2.0 VisionPy wheel. Generated copies and local npm tarballs are ignored and
+CLI also includes the locally built Apache-2.0 VisionPy wheel. Generated copies and
+local npm tarballs are ignored and
 are not source-controlled or published.
 
 React 19.3.0, React DOM 19.3.0, Vue 3.5.43, and Vite 8.3.4 are pinned only in the

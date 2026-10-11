@@ -19,3 +19,8 @@
 - Add isolated local-tarball acceptance for plain JavaScript, React, Vue, dual
   instances, production static hosting, form submission, and three browser engines.
 - Record the occupied PyPI name and defer public package identity and publication.
+- Instrument host, Worker, and React startup; terminate abandoned pre-ready Workers
+  synchronously; serialize the external browser matrix; and load the dependency-free
+  SDK wheel directly to remove micropip startup overhead.
+- Record the VNForge software/domain conflict and block the requested migration
+  without selecting a fallback identity.

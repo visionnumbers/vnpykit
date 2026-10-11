@@ -34,13 +34,18 @@ test("plain host mounts two isolated apps and disposes them", async ({ page, bro
   expect(await page.locator("[data-visionpy-root]").count()).toBe(0);
 });
 
-test("React mounts and unmounts the framework-independent API", async ({ page }) => {
+test("React StrictMode mounts, cleans up the abandoned Worker, and unmounts", async ({ page, browser }) => {
+  const lifecycle: string[] = [];
+  page.on("console", (message) => {
+    if (message.text().includes("VISIONPY_")) lifecycle.push(message.text());
+  });
   await navigate(page, "/react.html");
   await page.waitForFunction(() => (globalThis as unknown as AcceptanceWindow).reactReady !== undefined);
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).reactReady);
   await expect(page.getByText("Hello VisionPy")).toBeVisible();
   await page.evaluate(() => (globalThis as unknown as AcceptanceWindow).reactRoot.unmount());
   await expect(page.locator("[data-visionpy-root]")).toHaveCount(0);
+  console.log(`M3_REACT_LIFECYCLE ${JSON.stringify({ browserVersion: browser.version(), lifecycle })}`);
 });
 
 test("Vue mounts and unmounts the framework-independent API", async ({ page }) => {

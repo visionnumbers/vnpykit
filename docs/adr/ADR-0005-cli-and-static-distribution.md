@@ -15,8 +15,10 @@ would require a separately ratified distribution design.
 Node.js 24 or newer is therefore an explicit end-user prerequisite for the M3 CLI.
 It is not installed by pip and does not execute application Python on the server.
 
-The builder copies exact local artifacts: Pyodide 314.0.7, micropip 0.11.1, the
-matching VisionPy wheel, the bundled host, and a separate module Worker. Generated
+The builder copies exact local artifacts: Pyodide 314.0.7, the matching VisionPy
+wheel, the bundled host, and a separate module Worker. ADR-0006 supersedes the
+original micropip loading detail because the SDK wheel has no dependencies and
+Pyodide's direct wheel loader avoids measured WebKit resolver overhead. Generated
 pages use relative URLs, a restrictive CSP, a versioned JSON manifest, SHA-256 file
 checksums, and `SOURCE_DATE_EPOCH` metadata. The output has no development-server
 dependency and supports a normalized deployment base.

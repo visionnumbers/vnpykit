@@ -76,7 +76,7 @@ corepack pnpm dev:counter
 ```
 
 Open `http://127.0.0.1:4173`. The page starts two independent Python counter/form
-applications. Runtime files, micropip, and the VisionPy wheel are served locally;
+applications. Runtime files and the VisionPy wheel are served locally;
 the demo does not depend on CodeLab or a CDN at runtime.
 
 See [getting started](docs/getting-started.md), [embedding](docs/embedding.md),

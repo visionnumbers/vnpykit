@@ -11,7 +11,3 @@ const output = resolve(packageRoot, "assets");
 await rm(output, { recursive: true, force: true });
 await mkdir(resolve(output, "wheels"), { recursive: true });
 await copyFile(resolve(wheelRoot, wheels[0]), resolve(output, "wheels", wheels[0]));
-await copyFile(
-  resolve(repositoryRoot, "vendor/pyodide/micropip-0.11.1-py3-none-any.whl"),
-  resolve(output, "micropip-0.11.1-py3-none-any.whl"),
-);

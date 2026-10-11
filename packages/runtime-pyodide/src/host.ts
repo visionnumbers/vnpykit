@@ -71,6 +71,9 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
   let disposeAckResolver: (() => void) | undefined;
   let lastEventAt: number | undefined;
   const errorListeners = new Set<(error: VisionPyErrorEvent) => void>();
+  const trace = (stage: string, detail: Record<string, unknown> = {}): void => {
+    console.debug("VISIONPY_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - createdAt, ...detail });
+  };
 
   let resolveReady: () => void = () => undefined;
   let rejectReady: (reason: unknown) => void = () => undefined;
@@ -98,6 +101,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
 
   try {
     status = "loading";
+    trace("host-loading");
     renderer = createRenderer({ mount: options.mount, appId, generation, ...(options.theme === undefined ? {} : { theme: options.theme }) });
     const channel = new MessageChannel();
     port = channel.port1;
@@ -105,6 +109,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     // source as a data: URL. The embed package ships worker.js beside its entry.
     const workerUrl = options.workerUrl ?? new URL([".", "worker.js"].join("/"), import.meta.url);
     worker = new Worker(workerUrl, { type: "module", name: `VisionPy ${appId}` });
+    trace("worker-created", { workerUrl: workerUrl.href });
 
     renderer.onUserEvent((payload: UserEvent["payload"]) => {
       if (status !== "running") return;
@@ -128,11 +133,13 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
       if (message.type === "RUNTIME_READY") {
         metrics.runtimeReadyMs = performance.now() - createdAt;
         status = "ready";
+        trace("runtime-ready");
       } else if (message.type === "UI_SNAPSHOT") {
         try {
           renderer?.mount(message);
           metrics.firstRenderMs = performance.now() - createdAt;
           status = "running";
+          trace("first-render", { snapshotSeq: message.seq });
           send("RENDER_ACK", { ackSeq: message.seq });
           if (!settledReady) {
             settledReady = true;
@@ -162,6 +169,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     port.start();
 
     worker.addEventListener("error", (event) => {
+      trace("worker-error", { message: event.message || "Worker failed" });
       fail({ code: "BOOT_FAILED", message: event.message || "Worker failed", phase: "bootstrap", fatal: true });
     });
 
@@ -176,6 +184,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
       port: channel.port2,
     };
     worker.postMessage(init, [channel.port2]);
+    trace("worker-init-posted");
   } catch (error) {
     fail({ code: "BOOT_FAILED", message: safeMessage(error), phase: "bootstrap", fatal: true });
   }
@@ -210,6 +219,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     dispose(): Promise<void> {
       if (disposePromise !== undefined) return disposePromise;
       disposePromise = (async () => {
+        const statusAtDispose = status;
         disposed = true;
         globalThis.clearTimeout(startupTimer);
         if (!settledReady) {
@@ -217,6 +227,20 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
           rejectReady(new VisionPyHostError({ code: "DISPOSED", message: "disposed before ready", phase: "bootstrap", fatal: true }));
         }
         status = "stopping";
+        trace("dispose-start", { statusAtDispose });
+
+        // A booting Worker cannot observe its MessagePort until Pyodide and the
+        // SDK wheel have loaded. Terminate it synchronously so a React
+        // StrictMode cleanup cannot leave a superseded Pyodide instance alive.
+        if (statusAtDispose === "created" || statusAtDispose === "loading" || statusAtDispose === "failed") {
+          worker?.terminate();
+          port?.close();
+          renderer?.dispose();
+          status = "disposed";
+          trace("dispose-complete", { mode: "pre-ready-terminate" });
+          return;
+        }
+
         const acknowledged = new Promise<void>((resolve) => { disposeAckResolver = resolve; });
         if (port !== undefined) {
           const wasDisposed = disposed;
@@ -229,6 +253,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
         port?.close();
         renderer?.dispose();
         status = "disposed";
+        trace("dispose-complete", { mode: "graceful-or-timeout" });
       })();
       return disposePromise;
     },
