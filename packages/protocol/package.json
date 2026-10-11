@@ -1,7 +1,7 @@
 {
   "name": "@vnpykit/protocol",
   "version": "0.1.0-alpha.1",
-  "private": true,
+  "description": "Validated protocol v1 contracts for VNPyKit browser runtimes",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,7 +11,12 @@
       "default": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": ["dist", "README.md"],
+  "keywords": ["vnpykit", "protocol", "pyodide", "browser", "typescript"],
+  "repository": { "type": "git", "url": "git+https://github.com/visionnumbers/vnpykit.git", "directory": "packages/protocol" },
+  "homepage": "https://github.com/visionnumbers/vnpykit#readme",
+  "bugs": { "url": "https://github.com/visionnumbers/vnpykit/issues" },
+  "publishConfig": { "access": "public", "provenance": true },
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "test": "vitest run",
@@ -20,4 +25,3 @@
   "license": "Apache-2.0",
   "engines": { "node": ">=24.0.0" }
 }
-

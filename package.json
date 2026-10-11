@@ -16,6 +16,7 @@
     "typecheck": "corepack pnpm build && corepack pnpm -r typecheck"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.13.0",
     "@eslint/js": "10.0.1",
     "@playwright/test": "1.64.0",
     "@types/node": "24.10.13",

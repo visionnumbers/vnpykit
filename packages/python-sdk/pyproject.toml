@@ -10,14 +10,25 @@ readme = "README.md"
 requires-python = ">=3.12"
 license = "Apache-2.0"
 authors = [{ name = "VNPyKit contributors" }]
+keywords = ["browser", "pyodide", "python", "ui", "webassembly"]
 classifiers = [
   "Development Status :: 2 - Pre-Alpha",
+  "Environment :: WebAssembly",
   "License :: OSI Approved :: Apache Software License",
   "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Programming Language :: Python :: 3 :: Only",
   "Typing :: Typed",
 ]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/visionnumbers/vnpykit"
+Documentation = "https://github.com/visionnumbers/vnpykit#readme"
+Issues = "https://github.com/visionnumbers/vnpykit/issues"
+Repository = "https://github.com/visionnumbers/vnpykit.git"
 
 [project.optional-dependencies]
 dev = [

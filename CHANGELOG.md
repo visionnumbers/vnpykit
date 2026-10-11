@@ -2,8 +2,14 @@
 
 ## 0.1.0-alpha.1 - Unreleased
 
+- Prepare public-alpha package metadata, per-package README files, deterministic
+  artifact verification, checksum reporting, Trusted Publishing workflow gates,
+  Dependabot configuration, and automated WCAG 2 A/AA checks.
+- Keep publication blocked until namespace control, private vulnerability
+  reporting, legal review, and manual assistive-technology checks are complete.
+
 - Adopt VNPyKit as the owner-approved engineering identity: Python distribution
-  and import `vnpykit`, CLI executable `vnpykit`, and private npm packages under
+  and import `vnpykit`, CLI executable `vnpykit`, and npm packages under
   `@vnpykit/*`. Preserve protocol major 1 and runtime behavior.
 
 - Scaffold the M0 Python and TypeScript workspaces.

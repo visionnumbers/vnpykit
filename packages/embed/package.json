@@ -1,7 +1,7 @@
 {
   "name": "@vnpykit/embed",
   "version": "0.1.0-alpha.1",
-  "private": true,
+  "description": "Framework-independent browser embedding API for VNPyKit",
   "type": "module",
   "main": "./dist/vnpykit.js",
   "types": "./dist/types/index.d.ts",
@@ -13,6 +13,11 @@
     "./package.json": "./package.json"
   },
   "files": ["dist", "README.md"],
+  "keywords": ["vnpykit", "embed", "pyodide", "python", "browser"],
+  "repository": { "type": "git", "url": "git+https://github.com/visionnumbers/vnpykit.git", "directory": "packages/embed" },
+  "homepage": "https://github.com/visionnumbers/vnpykit#readme",
+  "bugs": { "url": "https://github.com/visionnumbers/vnpykit/issues" },
+  "publishConfig": { "access": "public", "provenance": true },
   "scripts": {
     "build": "node scripts/build.mjs && tsc -p tsconfig.json --emitDeclarationOnly && vite build && vite build --config vite.worker.config.ts",
     "test": "vitest run",

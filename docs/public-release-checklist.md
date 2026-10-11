@@ -5,9 +5,10 @@ release. A local checkpoint commit does not authorize publishing.
 
 ## Repository content
 
-- [ ] Run `python scripts/scan-secrets.py` and an independent full-history scanner
-  such as Gitleaks after a public remote exists.
-- [x] Run the repository scanner after the VNPyKit migration (139 files; passed).
+- [x] Run `python scripts/scan-secrets.py` and an independent full-history scanner.
+  M4: repository scanner passed 144 files; Gitleaks 8.30.1 scanned all six local
+  commits with no findings. Repeat after the remote and release commit exist.
+- [x] Run the repository scanner after the VNPyKit migration (144 files; passed).
 - [ ] Inspect `git status --short --ignored` and `git ls-files`; confirm virtual
   environments, caches, `node_modules`, build output, Playwright output, and copied
   Pyodide assets are excluded.
@@ -25,7 +26,7 @@ release. A local checkpoint commit does not authorize publishing.
   appendix text only if counsel or the owner requires an explicit notice.
 - [ ] Review `THIRD_PARTY_NOTICES.md`, dependency licenses, lockfiles, and vendored
   artifact hashes; retain upstream license files and source links.
-- [ ] Run `corepack pnpm audit --audit-level high` and the Python dependency audit
+- [x] Run `corepack pnpm audit --audit-level high` and the Python dependency audit
   chosen for the release process.
 - [x] M3.2 local audit: pnpm reported no known vulnerabilities; the clean Python
   environment had no broken requirements and the SDK declares zero runtime
@@ -69,3 +70,22 @@ block a local source checkpoint.
 - [ ] Perform manual screen-reader and high-contrast audits on supported platforms.
 - [ ] Configure private vulnerability reporting and release provenance before any
   public remote, package publication, or release.
+
+## M4 public-alpha candidate audit (2026-10-11)
+
+- [x] Verify Python `0.1.0a1`, npm `0.1.0-alpha.1`, and tag `v0.1.0a1`
+  consistency in source metadata.
+- [x] Build the wheel, sdist, and five public npm tarballs twice with a fixed
+  epoch; all seven pairs are byte-identical and checksums are recorded.
+- [x] Confirm the CLI tarball embeds the exact final wheel and all npm internal
+  dependencies use exact published versions without `workspace:` ranges.
+- [x] Pass Ruff, strict mypy, 25 pytest tests, ESLint, workspace typechecks/builds,
+  26 Vitest tests, Twine, wheel-content checks, and clean Python/npm installs.
+- [x] Pass Axe with no critical/serious findings, the 12/12 external matrix, and
+  the final 100-cycle Chromium stress gate.
+- [ ] Demonstrate PyPI and npm ownership. Exact endpoint 404s are evidence of no
+  visible project at the check time, not evidence of ownership or reservation.
+- [ ] Create and secure `visionnumbers/vnpykit`, configure protected release
+  environments and OIDC publishers, and enable private vulnerability reporting.
+- [ ] Complete qualified trademark/legal review and every manual accessibility
+  item, then obtain explicit authorization for tag/push/publication/release.

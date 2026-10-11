@@ -1,5 +1,25 @@
 # Implementation status
 
+## M4 — public-alpha release engineering
+
+Status: local release candidate accepted with a NO-GO publication verdict on
+2026-10-11; publication is not authorized.
+
+- Target versions are Python `0.1.0a1`, npm `0.1.0-alpha.1`, and tag
+  `v0.1.0a1`. The local directory intentionally remains `VisionPy`; published
+  package, import, executable, and documentation identities are VNPyKit.
+- Public npm metadata, Python project metadata, package READMEs, version
+  consistency checks, Dependabot, and a protected OIDC release workflow are
+  prepared locally.
+- ADR-0009 and the release plan separate artifact verification from publication.
+- Two fixed-epoch builds produced seven byte-identical artifacts. Python and Node
+  quality gates passed; the clean Python and npm consumers passed; Axe passed;
+  the final 12-case browser matrix passed across three engines; and the final
+  100-cycle lifecycle stress gate passed.
+- Namespace control, target remote configuration, private vulnerability intake,
+  legal clearance, manual accessibility evidence, and explicit publication
+  authorization remain blocking external gates.
+
 ## M0 — VP-001 and VP-002
 
 Status: implemented locally; release and publication are not authorized.

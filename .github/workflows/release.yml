@@ -1,0 +1,168 @@
+name: Public alpha release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing release tag to publish
+        required: true
+        default: v0.1.0a1
+      publish:
+        description: Publish after protected-environment approval
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    env:
+      SOURCE_DATE_EPOCH: "1760140800"
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+          fetch-depth: 0
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12.4"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.20.0"
+          package-manager-cache: false
+      - run: corepack enable
+      - run: corepack install
+      - run: corepack pnpm install --frozen-lockfile
+      - run: node scripts/verify-release-versions.mjs
+        env:
+          RELEASE_TAG: ${{ inputs.tag }}
+      - run: python -m pip install "build==1.6.1" "check-wheel-contents==0.6.3" "twine==7.0.0"
+      - run: python -m build packages/python-sdk --outdir .release/python
+      - run: python -m twine check .release/python/*
+      - run: python -m check_wheel_contents .release/python/*.whl
+      - name: Stage the verified wheel for CLI assembly
+        run: |
+          mkdir -p packages/python-sdk/dist
+          cp .release/python/vnpykit-0.1.0a1-py3-none-any.whl packages/python-sdk/dist/
+      - run: python scripts/scan-secrets.py
+      - run: corepack pnpm lint
+      - run: corepack pnpm typecheck
+      - run: corepack pnpm test
+      - run: corepack pnpm build
+      - run: mkdir -p .release/npm
+      - run: corepack pnpm --filter @vnpykit/protocol pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/renderer pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/runtime-pyodide pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/embed pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/cli pack --pack-destination .release/npm
+      - name: Rebuild and compare byte-for-byte
+        run: |
+          mkdir -p .release/repro/python .release/repro/npm
+          python -m build packages/python-sdk --outdir .release/repro/python
+          corepack pnpm --filter @vnpykit/protocol pack --pack-destination .release/repro/npm
+          corepack pnpm --filter @vnpykit/renderer pack --pack-destination .release/repro/npm
+          corepack pnpm --filter @vnpykit/runtime-pyodide pack --pack-destination .release/repro/npm
+          corepack pnpm --filter @vnpykit/embed pack --pack-destination .release/repro/npm
+          corepack pnpm --filter @vnpykit/cli pack --pack-destination .release/repro/npm
+          for artifact in .release/python/*; do cmp "$artifact" ".release/repro/python/$(basename "$artifact")"; done
+          for artifact in .release/npm/*; do cmp "$artifact" ".release/repro/npm/$(basename "$artifact")"; done
+      - run: python scripts/audit-release-artifacts.py .release --expected-copies 2
+      - run: corepack pnpm audit --audit-level high
+      - name: Verify clean Python installation
+        run: |
+          python -m venv .release/install-check
+          .release/install-check/bin/python -m pip install --no-index .release/python/vnpykit-0.1.0a1-py3-none-any.whl
+          .release/install-check/bin/python -c "import importlib.util, vnpykit; assert vnpykit.__version__ == '0.1.0a1'; assert importlib.util.find_spec('visionpy') is None"
+      - run: mkdir -p .vnpykit/packs && cp .release/npm/* .vnpykit/packs/
+      - run: node scripts/prepare-external-consumer.mjs
+      - run: corepack pnpm exec playwright install --with-deps chromium firefox webkit
+      - run: corepack pnpm test:e2e
+      - run: corepack pnpm exec playwright test --config playwright.external.config.ts
+      - run: corepack pnpm exec playwright test --project chromium --grep "100-cycle release stress"
+        env:
+          RUN_RELEASE_STRESS: "1"
+      - run: sha256sum .release/python/* .release/npm/* > .release/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: vnpykit-${{ inputs.tag }}
+          path: |
+            .release/SHA256SUMS
+            .release/python/*
+            .release/npm/*
+          if-no-files-found: error
+          retention-days: 14
+
+  publish-pypi:
+    if: ${{ inputs.publish }}
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: public-alpha-pypi
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: vnpykit-${{ inputs.tag }}
+          path: .release
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: .release/python
+          attestations: true
+
+  publish-npm:
+    if: ${{ inputs.publish }}
+    needs: verify
+    runs-on: ubuntu-latest
+    environment: public-alpha-npm
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24.20.0"
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm install --global npm@11.9.0
+      - uses: actions/download-artifact@v4
+        with:
+          name: vnpykit-${{ inputs.tag }}
+          path: .release
+      - name: Publish in dependency order with OIDC
+        run: |
+          npm publish .release/npm/vnpykit-protocol-0.1.0-alpha.1.tgz --access public
+          npm publish .release/npm/vnpykit-renderer-0.1.0-alpha.1.tgz --access public
+          npm publish .release/npm/vnpykit-runtime-pyodide-0.1.0-alpha.1.tgz --access public
+          npm publish .release/npm/vnpykit-embed-0.1.0-alpha.1.tgz --access public
+          npm publish .release/npm/vnpykit-cli-0.1.0-alpha.1.tgz --access public
+
+  github-release:
+    if: ${{ inputs.publish }}
+    needs: [verify, publish-pypi, publish-npm]
+    runs-on: ubuntu-latest
+    environment: public-alpha-github
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: vnpykit-${{ inputs.tag }}
+          path: .release
+      - name: Create immutable prerelease from the existing tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          gh release create "${{ inputs.tag }}" .release/SHA256SUMS
+          .release/python/* .release/npm/*
+          --verify-tag --prerelease --title "VNPyKit ${{ inputs.tag }}"
+          --notes-file docs/releases/v0.1.0-alpha.1-release-notes.md

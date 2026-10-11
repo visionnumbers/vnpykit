@@ -6,6 +6,9 @@ export default tseslint.config(
     ignores: [
       "**/dist/**",
       "**/node_modules/**",
+      ".release/**",
+      ".venv/**",
+      ".vnpykit/**",
       "coverage/**",
       "examples/counter/public/pyodide/**",
       "examples/counter/public/wheels/**",

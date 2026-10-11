@@ -3,7 +3,12 @@
 Automated M2/M3 coverage verifies semantic labels, native text/checkbox controls,
 required and invalid state, status/alert roles, visible focus, focus preservation,
 keyboard Tab order, Enter submission, and React/Vue mount cleanup in Chromium,
-Firefox, and WebKit.
+Firefox, and WebKit. M4 adds an Axe scan for WCAG 2.0/2.1 A and AA rules; its
+actual result is recorded in the M4 acceptance report after execution.
+
+M4 automated result (2026-10-11): PASS on Chromium 156.0.8078.4 with Axe 4.13.0;
+zero critical or serious findings after correcting the demo scratch mount to use
+a valid named `region`. This automated result does not complete the manual items.
 
 The following manual release checks require platform assistive technology and are
 not represented as completed automated tests:
