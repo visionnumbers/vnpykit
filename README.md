@@ -7,6 +7,10 @@ The M2 widget slice is `App`, `State`, `Container`, `Column`, `Row`, `Text`,
 Python state. Dynamic tree mutation, graphics, games, and arbitrary package
 installation remain deferred.
 
+M3 adds a provisional Node.js CLI, reproducible static-site assembly, and a
+framework-independent TypeScript embedding API. Package identity is unresolved, so
+all artifacts remain local and private.
+
 ```python
 from visionpy import App, State
 from visionpy.ui import Button, Checkbox, Column, Text, TextInput
@@ -44,6 +48,20 @@ corepack pnpm exec playwright install chromium
 corepack pnpm test:e2e
 ```
 
+## CLI and static builds
+
+The provisional CLI is distributed as an npm executable and requires Node.js 24+.
+After building and locally packing the repository packages:
+
+```shell
+visionpy create hello-app
+visionpy run hello-app/app.py
+visionpy build hello-app/app.py --out-dir dist --base /demo/
+```
+
+The build contains pinned Pyodide and Python assets and runs from an ordinary static
+HTTP server. It makes no runtime CDN request.
+
 ## Run the standalone demo on Windows
 
 From PowerShell at the repository root:
@@ -61,7 +79,9 @@ Open `http://127.0.0.1:4173`. The page starts two independent Python counter/for
 applications. Runtime files, micropip, and the VisionPy wheel are served locally;
 the demo does not depend on CodeLab or a CDN at runtime.
 
-See [M2 forms](docs/m2-forms.md), [M1 runtime](docs/m1-runtime.md),
+See [getting started](docs/getting-started.md), [embedding](docs/embedding.md),
+[deployment](docs/deployment.md), [M3 distribution](docs/m3-distribution.md),
+[M2 forms](docs/m2-forms.md), [M1 runtime](docs/m1-runtime.md),
 [implementation status](docs/implementation-status.md), [protocol v1](docs/protocol-v1.md),
 and [ADR-0003](docs/adr/ADR-0003-m2-decisions.md).
 
@@ -78,4 +98,5 @@ A Web Worker is an execution and responsiveness boundary, not a hardened sandbox
 
 ## License
 
-Apache-2.0. Package names and trademark availability remain unverified and no artifacts are published.
+Apache-2.0. ADR-0004 records the occupied PyPI name and candidate identities. No
+artifact has been published.

@@ -10,7 +10,9 @@
     "visionpy": "0.1.0a1",
     "@visionpy/protocol": "0.1.0-alpha.1",
     "@visionpy/renderer": "0.1.0-alpha.1",
-    "@visionpy/runtime-pyodide": "0.1.0-alpha.1"
+    "@visionpy/runtime-pyodide": "0.1.0-alpha.1",
+    "@visionpy/embed": "0.1.0-alpha.1",
+    "@visionpy/cli": "0.1.0-alpha.1"
   },
-  "compatibility": "visionpy 0.1.0a1 wheel imported and executed in Pyodide 314.0.7 / Python 3.14.2 using micropip 0.11.1 in Chromium 156.0.8078.4."
+  "compatibility": "visionpy 0.1.0a1 imported from a local wheel in Pyodide 314.0.7 / Python 3.14.2 with micropip 0.11.1; M3 production output passed Chromium, Firefox, and WebKit on 2026-10-11."
 }

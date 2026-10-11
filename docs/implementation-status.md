@@ -53,3 +53,35 @@ Status: implemented and verified locally on 2026-10-11; no package was published
 See `docs/m2-forms.md` and ADR-0003 for benchmark conditions and decisions. M3 may
 start with CLI/static packaging and deeper leak/assistive-technology validation;
 dynamic tree patches require a separately reviewed protocol decision.
+
+## M3 — distribution and embedding
+
+Status: implemented locally on 2026-10-11; publication remains blocked.
+
+- CLI: cross-platform Node 24 executable with `create`, loopback-first `run`, and
+  reproducible `build`; safe path/base/host validation and source reload.
+- Static output: local Pyodide 314.0.7, micropip 0.11.1, matching SDK wheel,
+  CSP-safe external Worker, protocol/version manifest, SHA-256 checksums, and nested
+  deployment support.
+- Embed: framework-independent ESM API with self-contained declarations, lifecycle,
+  independent instances, and tested plain/React/Vue usage.
+- External acceptance: a clean system-temp consumer installed local tarballs
+  without workspace aliases. Chromium and Firefox passed production form,
+  dual-instance, React, and Vue tests. WebKit passed the nested static build,
+  dual-instance plain host, and Vue; the final React case exceeded the 120-second
+  runtime startup timeout twice. An earlier artifact run passed that case, so this
+  remains an unresolved intermittent release blocker.
+- Package identity: PyPI `visionpy` and GitHub `VisionPy` conflict; ADR-0004 keeps
+  all npm packages private and defers public naming.
+- Performance: measured with a local no-store static server. Detailed current
+  results and attribution limits are recorded in `docs/m3-distribution.md`.
+- Stress: 100 real Chromium dispose/remount cycles passed in 8.9 minutes; ten
+  forced-GC samples retained exactly two live roots and a stable coarse JS heap.
+- Remaining release gates: public identity/trademark decision, private security
+  contact, manual screen-reader/high-contrast audit, full-history secret scan after
+  a remote exists, and explicit publication authorization.
+
+M3 acceptance is FAIL until the WebKit+React startup timeout is reproduced and
+resolved under a controlled-memory test host. M4 is not ready. The manual
+accessibility checks and release-identity decision also remain public-release
+blockers. Graphics/game APIs and hostile-code isolation remain out of scope.

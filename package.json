@@ -7,13 +7,13 @@
     "node": ">=24.0.0"
   },
   "scripts": {
-    "build": "corepack pnpm --filter @visionpy/protocol build && corepack pnpm --filter @visionpy/renderer build && corepack pnpm --filter @visionpy/runtime-pyodide build",
+    "build": "corepack pnpm --filter @visionpy/protocol build && corepack pnpm --filter @visionpy/renderer build && corepack pnpm --filter @visionpy/runtime-pyodide build && corepack pnpm --filter @visionpy/embed build && corepack pnpm --filter @visionpy/cli build",
     "build:counter": "corepack pnpm --filter @visionpy/example-counter build",
     "dev:counter": "corepack pnpm --filter @visionpy/example-counter dev",
     "lint": "eslint .",
-    "test": "corepack pnpm --filter @visionpy/protocol build && vitest run packages",
+    "test": "corepack pnpm build && vitest run packages",
     "test:e2e": "playwright test",
-    "typecheck": "corepack pnpm --filter @visionpy/protocol build && corepack pnpm --filter @visionpy/renderer build && corepack pnpm --filter @visionpy/runtime-pyodide build && corepack pnpm -r typecheck"
+    "typecheck": "corepack pnpm build && corepack pnpm -r typecheck"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",

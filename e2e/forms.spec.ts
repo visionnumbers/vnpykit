@@ -93,8 +93,21 @@ test("100-cycle release stress", async ({ page, browserName }) => {
   test.setTimeout(1_800_000);
   await page.goto("/");
   await page.evaluate(() => window.visionpyDemo.ready);
-  for (let cycle = 0; cycle < 100; cycle += 1) await page.evaluate(() => window.visionpyDemo.remountFirst());
+  const memory: Array<{ cycle: number; heapBytes?: number; owners: number }> = [];
+  for (let cycle = 0; cycle < 100; cycle += 1) {
+    await page.evaluate(() => window.visionpyDemo.remountFirst());
+    if ((cycle + 1) % 10 === 0) {
+      await page.requestGC();
+      memory.push(await page.evaluate((completed) => ({
+        cycle: completed,
+        heapBytes: (performance as Performance & { memory?: { usedJSHeapSize: number } }).memory?.usedJSHeapSize,
+        owners: document.querySelectorAll("[data-visionpy-root]").length,
+      }), cycle + 1));
+    }
+  }
   await expect(page.locator("#app-one").getByText("Count: 0")).toBeVisible();
+  console.log(`M3_STRESS_MEMORY ${JSON.stringify(memory)}`);
+  expect(memory.every((sample) => sample.owners === 2)).toBe(true);
 });
 
 declare global {

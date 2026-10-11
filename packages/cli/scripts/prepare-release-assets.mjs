@@ -1,0 +1,17 @@
+import { copyFile, mkdir, readdir, rm } from "node:fs/promises";
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const packageRoot = resolve(dirname(fileURLToPath(import.meta.url)), "..");
+const repositoryRoot = resolve(packageRoot, "../..");
+const wheelRoot = resolve(repositoryRoot, "packages/python-sdk/dist");
+const wheels = (await readdir(wheelRoot)).filter((name) => /^visionpy-.*-py3-none-any\.whl$/u.test(name)).sort();
+if (wheels.length !== 1) throw new Error(`Expected exactly one VisionPy wheel in ${wheelRoot}; found ${wheels.length}.`);
+const output = resolve(packageRoot, "assets");
+await rm(output, { recursive: true, force: true });
+await mkdir(resolve(output, "wheels"), { recursive: true });
+await copyFile(resolve(wheelRoot, wheels[0]), resolve(output, "wheels", wheels[0]));
+await copyFile(
+  resolve(repositoryRoot, "vendor/pyodide/micropip-0.11.1-py3-none-any.whl"),
+  resolve(output, "micropip-0.11.1-py3-none-any.whl"),
+);

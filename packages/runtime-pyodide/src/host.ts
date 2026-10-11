@@ -101,7 +101,9 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
     renderer = createRenderer({ mount: options.mount, appId, generation, ...(options.theme === undefined ? {} : { theme: options.theme }) });
     const channel = new MessageChannel();
     port = channel.port1;
-    const workerUrl = options.workerUrl ?? new URL("./worker.js", import.meta.url);
+    // Keep this URL dynamic so library bundlers do not inline executable worker
+    // source as a data: URL. The embed package ships worker.js beside its entry.
+    const workerUrl = options.workerUrl ?? new URL([".", "worker.js"].join("/"), import.meta.url);
     worker = new Worker(workerUrl, { type: "module", name: `VisionPy ${appId}` });
 
     renderer.onUserEvent((payload: UserEvent["payload"]) => {
@@ -256,7 +258,7 @@ export class VisionPyHostError extends Error {
 
 function normalizedBase(value: string): URL {
   const url = new URL(value.endsWith("/") ? value : `${value}/`, document.baseURI);
-  if (!url.protocol.startsWith("http")) throw new TypeError("assetsBaseUrl must use HTTP(S)");
+  if (url.protocol !== "http:" && url.protocol !== "https:") throw new TypeError("assetsBaseUrl must use HTTP(S)");
   return url;
 }
 

@@ -1,0 +1,14 @@
+# `@visionpy/cli`
+
+Provisional Node.js 24+ CLI for creating, running, and building VisionPy apps.
+
+```text
+visionpy create hello-app
+visionpy run hello-app/app.py
+visionpy build hello-app/app.py --out-dir hello-app/dist --base /nested/demo/
+```
+
+The package includes the exact VisionPy wheel and micropip wheel used by the static
+builder. Pyodide 314.0.7 is an exact dependency. Builds perform no network fetch.
+The default development host is loopback; non-loopback binding requires the explicit
+`--allow-public` flag and is only suitable for trusted source.

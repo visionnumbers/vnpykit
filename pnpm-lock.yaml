@@ -203,6 +203,28 @@ importers:
         specifier: 314.0.7
         version: 314.0.7
 
+  packages/cli:
+    dependencies:
+      '@visionpy/embed':
+        specifier: workspace:*
+        version: link:../embed
+      pyodide:
+        specifier: 314.0.7
+        version: 314.0.7
+    devDependencies:
+      '@types/node':
+        specifier: 24.10.13
+        version: 24.10.13
+
+  packages/embed:
+    devDependencies:
+      '@visionpy/runtime-pyodide':
+        specifier: workspace:*
+        version: link:../runtime-pyodide
+      vite:
+        specifier: 8.3.4
+        version: 8.3.4(@types/node@24.10.13)
+
   packages/protocol: {}
 
   packages/renderer:

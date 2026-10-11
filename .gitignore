@@ -12,3 +12,5 @@ examples/counter/public/pyodide/
 examples/counter/public/wheels/
 test-results/
 playwright-report/
+packages/cli/assets/
+.visionpy/

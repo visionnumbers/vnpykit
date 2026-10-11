@@ -1,0 +1,26 @@
+{
+  "name": "@visionpy/cli",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "bin": { "visionpy": "./dist/bin.js" },
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "assets", "README.md"],
+  "scripts": {
+    "build": "node scripts/prepare-release-assets.mjs && tsc -p tsconfig.json",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@visionpy/embed": "workspace:*",
+    "pyodide": "314.0.7"
+  },
+  "devDependencies": { "@types/node": "24.10.13" },
+  "license": "Apache-2.0",
+  "engines": { "node": ">=24.0.0" }
+}

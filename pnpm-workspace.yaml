@@ -2,4 +2,6 @@ packages:
   - "packages/protocol"
   - "packages/renderer"
   - "packages/runtime-pyodide"
+  - "packages/embed"
+  - "packages/cli"
   - "examples/counter"

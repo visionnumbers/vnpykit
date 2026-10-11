@@ -11,3 +11,11 @@
   bounded reactive cycles, and disposal/recreation APIs.
 - Validate real Python forms in Chromium, Firefox, and WebKit and add 30-cycle and
   opt-in 100-cycle lifecycle tests.
+- Add the provisional `visionpy create`, `run`, and `build` Node CLI with loopback
+  serving, safe reload, traversal checks, nested deployment, reproducible manifests,
+  checksums, and pinned local runtime assets.
+- Add the self-contained `@visionpy/embed` ESM bundle, TypeScript declarations, and
+  separate CSP-compatible Worker artifact.
+- Add isolated local-tarball acceptance for plain JavaScript, React, Vue, dual
+  instances, production static hosting, form submission, and three browser engines.
+- Record the occupied PyPI name and defer public package identity and publication.

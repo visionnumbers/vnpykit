@@ -16,6 +16,29 @@ export default tseslint.config(
   eslint.configs.recommended,
   ...tseslint.configs.strict,
   {
+    files: ["scripts/fixtures/external-consumer/*.js"],
+    languageOptions: {
+      globals: {
+        URL: "readonly",
+        document: "readonly",
+        globalThis: "readonly",
+        location: "readonly",
+      },
+    },
+  },
+  {
+    files: ["scripts/*.mjs"],
+    languageOptions: {
+      globals: {
+        URL: "readonly",
+        console: "readonly",
+        fetch: "readonly",
+        process: "readonly",
+        setTimeout: "readonly",
+      },
+    },
+  },
+  {
     files: ["**/*.ts"],
     rules: {
       "@typescript-eslint/consistent-type-imports": "error",

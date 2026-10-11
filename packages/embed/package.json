@@ -1,0 +1,27 @@
+{
+  "name": "@visionpy/embed",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "main": "./dist/visionpy.js",
+  "types": "./dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "default": "./dist/visionpy.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "README.md"],
+  "scripts": {
+    "build": "node scripts/build.mjs && tsc -p tsconfig.json --emitDeclarationOnly && vite build && vite build --config vite.worker.config.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "@visionpy/runtime-pyodide": "workspace:*",
+    "vite": "8.3.4"
+  },
+  "license": "Apache-2.0",
+  "engines": { "node": ">=24.0.0" }
+}

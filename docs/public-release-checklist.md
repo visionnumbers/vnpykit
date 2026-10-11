@@ -46,3 +46,16 @@ was the 115,486-byte micropip wheel documented in `THIRD_PARTY_NOTICES.md`; its 
 MPL-2.0 and vendored licenses were verified. Public release remains blocked on the
 name/trademark review and creation of a private security contact, but these do not
 block a local source checkpoint.
+
+## M3 local artifact audit (2026-10-11)
+
+- [x] Local wheel, sdist, npm tarballs, manifests, and SHA-256 checksums build.
+- [x] External consumer installs local CLI/embed tarballs without workspace aliases.
+- [x] npm reported zero known vulnerabilities in the 43-package consumer graph.
+- [x] Generated production output uses a separate same-origin Worker and restrictive
+  CSP; no floating runtime dependency or CDN URL is emitted.
+- [x] Registry identity conflicts and candidate names are recorded in ADR-0004.
+- [ ] Select and approve the public distribution/npm identity.
+- [ ] Perform manual screen-reader and high-contrast audits on supported platforms.
+- [ ] Configure private vulnerability reporting and release provenance before any
+  public remote, package publication, or release.
