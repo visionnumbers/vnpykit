@@ -127,6 +127,26 @@ describe("patches and events", () => {
     expect(() => validateUserEvent(envelope("USER_EVENT", { handlerId: "1", nodeId: "2", event: "click", value: "x" }))).toThrow(/must not carry/u);
   });
 
+  it("validates M2 form controls and type-specific event values", () => {
+    const form = snapshot();
+    form.payload.root.events = { submit: "1" };
+    form.payload.root.children = [
+      { id: "2", kind: "textInput", props: { label: "Name", value: "", placeholder: "Type", disabled: false, required: true, error: null }, events: { input: "2", change: "3" }, children: [] },
+      { id: "3", kind: "checkbox", props: { label: "Accept", checked: false, disabled: false, required: true, error: null }, events: { change: "4" }, children: [] },
+      { id: "4", kind: "button", props: { text: "Submit", disabled: false, submit: true }, children: [] },
+    ];
+    expect(validateSnapshot(form).payload.root.children).toHaveLength(3);
+    const session = new ProtocolSessionValidator({ appId: "app_1", generation: "generation_1" });
+    session.accept(form);
+    session.accept(envelope("USER_EVENT", { handlerId: "2", nodeId: "2", event: "input", value: "Ada" }, 1));
+    session.accept(envelope("USER_EVENT", { handlerId: "4", nodeId: "3", event: "change", value: true }, 2));
+    session.accept(envelope("USER_EVENT", { handlerId: "1", nodeId: "1", event: "submit" }, 3));
+
+    const wrong = new ProtocolSessionValidator({ appId: "app_1", generation: "generation_1" });
+    wrong.accept(form);
+    expect(() => wrong.accept(envelope("USER_EVENT", { handlerId: "4", nodeId: "3", event: "change", value: "true" }, 1))).toThrow(/boolean value/u);
+  });
+
   it("enforces patch count", () => {
     const changes = Array.from({ length: LIMITS.maxPatchesPerBatch + 1 }, (_, index) => ({ id: String(index + 1), props: {} }));
     expect(() => validatePatchBatch(envelope("PATCH_BATCH", { changes }))).toThrow(/patch count/u);

@@ -9,11 +9,13 @@ const scratchMount = requiredElement("scratch");
 const assetsBaseUrl = new URL(import.meta.env.BASE_URL, location.origin).href;
 
 let first = mountCounter(firstMount);
-const second = mountCounter(secondMount);
+let second: VisionPyAppHandle;
 
 async function ready(): Promise<void> {
   try {
-    await Promise.all([first.ready, second.ready]);
+    await first.ready;
+    second = mountCounter(secondMount);
+    await second.ready;
     statusElement.textContent = "Two Python applications are ready.";
     renderMetrics();
   } catch (error) {
@@ -30,10 +32,14 @@ function mountCounter(mount: HTMLElement): VisionPyAppHandle {
     startupTimeoutMs: 60_000,
     shutdownGraceMs: 1_000,
   });
+  watchErrors(app);
+  return app;
+}
+
+function watchErrors(app: VisionPyAppHandle): void {
   app.onError((error) => {
     statusElement.textContent = `${error.code}: ${error.message}`;
   });
-  return app;
 }
 
 function mountSource(source: string): VisionPyAppHandle {
@@ -49,15 +55,15 @@ function mountSource(source: string): VisionPyAppHandle {
 }
 
 async function remountFirst(): Promise<void> {
-  await first.dispose();
-  first = mountCounter(firstMount);
+  first = await first.recreate();
+  watchErrors(first);
   await first.ready;
   statusElement.textContent = "Instance one was disposed and remounted.";
   renderMetrics();
 }
 
 function renderMetrics(): void {
-  metricsElement.textContent = JSON.stringify({ first: first.metrics, second: second.metrics }, null, 2);
+  metricsElement.textContent = JSON.stringify({ cold: first.metrics, warm: second.metrics }, null, 2);
 }
 
 requiredElement("remount").addEventListener("click", () => void remountFirst());
@@ -73,7 +79,7 @@ declare global {
     visionpyDemo: {
       ready: Promise<void>;
       getFirst(): VisionPyAppHandle;
-      second: VisionPyAppHandle;
+      getSecond(): VisionPyAppHandle;
       remountFirst(): Promise<void>;
       mountSource(source: string): VisionPyAppHandle;
     };
@@ -81,4 +87,4 @@ declare global {
 }
 
 const readyPromise = ready();
-window.visionpyDemo = { ready: readyPromise, getFirst: () => first, second, remountFirst, mountSource };
+window.visionpyDemo = { ready: readyPromise, getFirst: () => first, getSecond: () => second, remountFirst, mountSource };

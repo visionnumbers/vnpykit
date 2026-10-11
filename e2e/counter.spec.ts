@@ -1,5 +1,9 @@
 import { expect, test } from "@playwright/test";
 
+test.beforeEach(({ browserName }) => {
+  test.skip(browserName !== "chromium", "M1 regression suite runs on Chromium; M2 forms cover all engines.");
+});
+
 test("real Pyodide counters update independently", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => window.visionpyDemo.ready);
@@ -17,7 +21,7 @@ test("real Pyodide counters update independently", async ({ page }) => {
   await expect(first.getByText("Count: 3")).toBeVisible();
   const metrics = await page.evaluate(() => ({
     first: window.visionpyDemo.getFirst().metrics,
-    second: window.visionpyDemo.second.metrics,
+    second: window.visionpyDemo.getSecond().metrics,
   }));
   console.log(`M1_METRICS ${JSON.stringify(metrics)}`);
   expect(metrics.first.runtimeReadyMs).toBeGreaterThan(0);
@@ -90,7 +94,7 @@ declare global {
         metrics: { runtimeReadyMs?: number; firstRenderMs?: number; lastCallbackLatencyMs?: number };
         stop(): Promise<void>;
       };
-      second: { metrics: { runtimeReadyMs?: number; firstRenderMs?: number } };
+      getSecond(): { metrics: { runtimeReadyMs?: number; firstRenderMs?: number } };
       mountSource(source: string): { ready: Promise<void>; dispose(): Promise<void> };
     };
     recoveryApp: { dispose(): Promise<void> };

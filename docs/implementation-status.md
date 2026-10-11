@@ -32,3 +32,24 @@ Verified compatibility: VisionPy `0.1.0a1` on Pyodide `314.0.7`, Python `3.14.2`
 Built wheel SHA-256 for this M1 verification: `3CDEE56272A73826500F9893DA68FB02E402B0660D0A63872AAFEB7BB967DB73`.
 
 Deferred to M2: TextInput, Checkbox, Row, broader browser matrix, deeper leak instrumentation, reactivity loop budgets, forms/accessibility expansion, and restart-by-recreation convenience APIs. CLI and static packaging automation remain M3.
+
+## M2 — reactive forms
+
+Status: implemented and verified locally on 2026-10-11; no package was published.
+
+- Python API: `Row`, controlled `TextInput`/`Checkbox`, immutable typed events,
+  validation strings, native submit callbacks, and bound value/checked state.
+- Renderer: semantic labels and controls, Row/form layouts, input/change/submit
+  normalization, accessible validation, visible focus, focus preservation, and
+  instance-scoped loading/failure states.
+- Runtime: fresh-generation `recreate()`, host focus helper, strict v1 ownership,
+  Worker termination, and existing PyProxy cleanup.
+- Safety: 100-evaluation reactive-cycle ceiling, existing event budgets, bounded
+  input lengths, no raw HTML/eval/remote package API, and cross-instance isolation.
+- Browser verification: controlled forms passed in Chromium, Firefox, and WebKit;
+  a real 30-cycle Chromium dispose/recreate test passed. The opt-in 100-cycle
+  release stress gate remains pending.
+
+See `docs/m2-forms.md` and ADR-0003 for benchmark conditions and decisions. M3 may
+start with CLI/static packaging and deeper leak/assistive-technology validation;
+dynamic tree patches require a separately reviewed protocol decision.

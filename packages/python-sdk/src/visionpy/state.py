@@ -87,10 +87,7 @@ class Binding:
     def invalidate(self) -> None:
         if self._disposed:
             return
-        try:
-            self.evaluate()
-        except Exception as error:
-            self._component._app._report_callback_error(error)
+        self._component._app._schedule_binding(self)
 
     def dispose(self) -> None:
         if self._disposed:

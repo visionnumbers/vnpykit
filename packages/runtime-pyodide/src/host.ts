@@ -20,6 +20,8 @@ export interface VisionPyAppHandle {
   readonly metrics: Readonly<VisionPyMetrics>;
   stop(): Promise<void>;
   dispose(): Promise<void>;
+  recreate(): Promise<VisionPyAppHandle>;
+  focus(nodeId: string): boolean;
   onError(listener: (error: VisionPyErrorEvent) => void): () => void;
 }
 
@@ -79,6 +81,7 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
 
   const fail = (error: VisionPyErrorEvent): void => {
     status = "failed";
+    renderer?.showFailure(`${error.code}: ${error.message}`);
     for (const listener of errorListeners) listener(error);
     if (!settledReady) {
       settledReady = true;
@@ -226,6 +229,13 @@ export function createVisionPyApp(options: CreateVisionPyOptions): VisionPyAppHa
         status = "disposed";
       })();
       return disposePromise;
+    },
+    async recreate(): Promise<VisionPyAppHandle> {
+      await handle.dispose();
+      return createVisionPyApp(options);
+    },
+    focus(nodeId: string): boolean {
+      return renderer?.focus(nodeId) ?? false;
     },
     onError(listener: (error: VisionPyErrorEvent) => void): () => void {
       errorListeners.add(listener);

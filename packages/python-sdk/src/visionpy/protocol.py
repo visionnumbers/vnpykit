@@ -42,7 +42,7 @@ class Envelope(TypedDict):
 class UserEventPayload(TypedDict):
     handlerId: str
     nodeId: str
-    event: Literal["click", "input", "change"]
+    event: Literal["click", "input", "change", "submit"]
     value: NotRequired[str | bool]
 
 

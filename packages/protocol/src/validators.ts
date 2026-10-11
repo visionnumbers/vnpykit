@@ -30,7 +30,7 @@ const MESSAGE_TYPE_SET = new Set<string>(MESSAGE_TYPES);
 const ERROR_CODE_SET = new Set<string>(ERROR_CODES);
 const ERROR_PHASES = new Set<string>(["bootstrap", "build", "callback", "render", "protocol"]);
 const WIDGET_KINDS = new Set<string>(["column", "row", "container", "text", "button", "textInput", "checkbox"]);
-const EVENT_KINDS = new Set<string>(["click", "input", "change"]);
+const EVENT_KINDS = new Set<string>(["click", "input", "change", "submit"]);
 const EMPTY_MESSAGE_TYPES = new Set<MessageType>(["STOP_REQUEST", "STOP_ACK", "DISPOSE_REQUEST", "DISPOSE_ACK"]);
 
 function fail(message: string, path = "$", code: ConstructorParameters<typeof ProtocolValidationError>[0] = "INVALID_MESSAGE"): never {
@@ -106,9 +106,9 @@ function propsAt(value: unknown, kind: WidgetKind | undefined, path: string, par
   const result: Record<string, Scalar> = Object.create(null) as Record<string, Scalar>;
   const allowed: Record<WidgetKind, readonly string[]> = {
     text: ["text", "level", "tone"],
-    button: ["text", "disabled"],
-    textInput: ["label", "value", "placeholder", "disabled"],
-    checkbox: ["label", "checked", "disabled"],
+    button: ["text", "disabled", "submit"],
+    textInput: ["label", "value", "placeholder", "disabled", "required", "error"],
+    checkbox: ["label", "checked", "disabled", "required", "error"],
     column: ["gap", "align"],
     row: ["gap", "align"],
     container: ["padding", "width"],
@@ -118,7 +118,16 @@ function propsAt(value: unknown, kind: WidgetKind | undefined, path: string, par
       if (!allowed[kind].includes(key)) fail(`property ${key} is not allowed for ${kind}`, `${path}.${key}`);
     }
     if (!partial) {
-      for (const key of allowed[kind]) {
+      const required: Record<WidgetKind, readonly string[]> = {
+        text: ["text", "level", "tone"],
+        button: ["text", "disabled"],
+        textInput: ["label", "value", "placeholder", "disabled"],
+        checkbox: ["label", "checked", "disabled"],
+        column: ["gap", "align"],
+        row: ["gap", "align"],
+        container: ["padding", "width"],
+      };
+      for (const key of required[kind]) {
         if (!(key in record)) fail(`missing property ${key} for ${kind}`, `${path}.${key}`);
       }
     }
@@ -131,13 +140,18 @@ function propsAt(value: unknown, kind: WidgetKind | undefined, path: string, par
   } else if (kind === "button") {
     if ("text" in record) result.text = stringAt(record.text, `${path}.text`);
     if ("disabled" in record) result.disabled = booleanAt(record.disabled, `${path}.disabled`);
+    if ("submit" in record) result.submit = booleanAt(record.submit, `${path}.submit`);
   } else if (kind === "textInput") {
     for (const key of ["label", "value", "placeholder"] as const) if (key in record) result[key] = stringAt(record[key], `${path}.${key}`);
     if ("disabled" in record) result.disabled = booleanAt(record.disabled, `${path}.disabled`);
+    if ("required" in record) result.required = booleanAt(record.required, `${path}.required`);
+    if ("error" in record && record.error !== null) result.error = stringAt(record.error, `${path}.error`);
   } else if (kind === "checkbox") {
     if ("label" in record) result.label = stringAt(record.label, `${path}.label`);
     if ("checked" in record) result.checked = booleanAt(record.checked, `${path}.checked`);
     if ("disabled" in record) result.disabled = booleanAt(record.disabled, `${path}.disabled`);
+    if ("required" in record) result.required = booleanAt(record.required, `${path}.required`);
+    if ("error" in record && record.error !== null) result.error = stringAt(record.error, `${path}.error`);
   } else if (kind === "column" || kind === "row") {
     if ("gap" in record) result.gap = boundedInteger(record.gap, `${path}.gap`, 0, 64);
     if ("align" in record && !["start", "center", "end", "stretch"].includes(String(record.align))) fail("invalid alignment", `${path}.align`);
@@ -150,7 +164,7 @@ function propsAt(value: unknown, kind: WidgetKind | undefined, path: string, par
 
 function eventsAt(value: unknown, kind: WidgetKind, path: string): Partial<Record<EventKind, HandlerId>> {
   const record = objectAt(value, path);
-  const allowed = kind === "button" ? ["click"] : kind === "textInput" ? ["input", "change"] : kind === "checkbox" ? ["change"] : [];
+  const allowed = kind === "button" ? ["click"] : kind === "column" ? ["submit"] : kind === "textInput" ? ["input", "change"] : kind === "checkbox" ? ["change"] : [];
   const result: Partial<Record<EventKind, HandlerId>> = {};
   for (const [key, handler] of Object.entries(record)) {
     if (!EVENT_KINDS.has(key) || !allowed.includes(key)) fail(`event ${key} is not allowed for ${kind}`, `${path}.${key}`);
@@ -271,7 +285,7 @@ function validateUserEventRecord(record: Record<string, unknown>): UserEvent {
   const eventValue = stringAt(payload.event, "$.payload.event", 16);
   if (!EVENT_KINDS.has(eventValue)) fail("unknown event kind", "$.payload.event");
   const event = eventValue as EventKind;
-  if (event === "click" && payload.value !== undefined) fail("click events must not carry a value", "$.payload.value");
+  if ((event === "click" || event === "submit") && payload.value !== undefined) fail(`${event} events must not carry a value`, "$.payload.value");
   if (event === "input" && typeof payload.value !== "string") fail("input events require a string value", "$.payload.value");
   if (event === "change" && typeof payload.value !== "string" && typeof payload.value !== "boolean") fail("change events require a string or boolean value", "$.payload.value");
   const basePayload = { handlerId: positiveDecimalAt(payload.handlerId, "$.payload.handlerId"), nodeId: positiveDecimalAt(payload.nodeId, "$.payload.nodeId"), event };

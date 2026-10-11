@@ -42,7 +42,7 @@ release. A local checkpoint commit does not authorize publishing.
 
 The working tree scan found no credentials, private URLs, personal absolute paths,
 or CodeLab dependencies. Generated directories were ignored. The only source binary
-was the 49 KiB micropip wheel documented in `THIRD_PARTY_NOTICES.md`; its embedded
+was the 115,486-byte micropip wheel documented in `THIRD_PARTY_NOTICES.md`; its embedded
 MPL-2.0 and vendored licenses were verified. Public release remains blocked on the
 name/trademark review and creation of a private security contact, but these do not
 block a local source checkpoint.

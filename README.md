@@ -2,7 +2,27 @@
 
 VisionPy is a browser-native Python application framework. Its M1 runtime executes the real Python SDK in a dedicated Pyodide Worker, sends validated protocol v1 snapshots and property patches, and renders an allowlisted accessible DOM tree on the main thread.
 
-The current widget slice is `App`, `State`, `Container`, `Column`, `Text`, and `Button`. Dynamic tree mutation, forms, graphics, games, and arbitrary package installation remain deferred.
+The M2 widget slice is `App`, `State`, `Container`, `Column`, `Row`, `Text`,
+`Button`, `TextInput`, and `Checkbox`. Forms use typed Worker events and controlled
+Python state. Dynamic tree mutation, graphics, games, and arbitrary package
+installation remain deferred.
+
+```python
+from visionpy import App, State
+from visionpy.ui import Button, Checkbox, Column, Text, TextInput
+
+app = App(title="Form")
+name = State("")
+accepted = State(False)
+
+with app.layout(), Column(on_submit=lambda: print(name.value, accepted.value)):
+    TextInput("Name", value=name, required=True)
+    Checkbox("Accept", checked=accepted, required=True)
+    Text.bind(lambda: f"Hello {name.value or 'friend'}")
+    Button("Submit", submit=True)
+
+app.run()
+```
 
 ## Development
 
@@ -37,9 +57,13 @@ corepack pnpm build
 corepack pnpm dev:counter
 ```
 
-Open `http://127.0.0.1:4173`. The page starts two independent Python counters. Runtime files, micropip, and the VisionPy wheel are served locally; the demo does not depend on CodeLab or a CDN at runtime.
+Open `http://127.0.0.1:4173`. The page starts two independent Python counter/form
+applications. Runtime files, micropip, and the VisionPy wheel are served locally;
+the demo does not depend on CodeLab or a CDN at runtime.
 
-See [M1 runtime](docs/m1-runtime.md), [implementation status](docs/implementation-status.md), [protocol v1](docs/protocol-v1.md), and [ADR-0002](docs/adr/ADR-0002-m1-runtime-decisions.md).
+See [M2 forms](docs/m2-forms.md), [M1 runtime](docs/m1-runtime.md),
+[implementation status](docs/implementation-status.md), [protocol v1](docs/protocol-v1.md),
+and [ADR-0003](docs/adr/ADR-0003-m2-decisions.md).
 
 ## Troubleshooting
 

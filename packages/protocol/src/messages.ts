@@ -46,7 +46,7 @@ export type NodeId = string;
 export type HandlerId = string;
 export type Scalar = string | number | boolean | null;
 export type WidgetKind = "column" | "row" | "container" | "text" | "button" | "textInput" | "checkbox";
-export type EventKind = "click" | "input" | "change";
+export type EventKind = "click" | "input" | "change" | "submit";
 
 export interface Envelope<T extends MessageType, P> {
   protocol: typeof PROTOCOL_MAJOR;
@@ -102,4 +102,3 @@ export type ProtocolMessage =
   | StopAck
   | DisposeRequest
   | DisposeAck;
-
