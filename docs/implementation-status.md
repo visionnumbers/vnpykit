@@ -96,3 +96,17 @@ game APIs, and hostile-code isolation remain out of scope.
   compiler and `vnforge.pro` create material confusion risk despite exact PyPI and
   npm endpoints returning 404. No fallback was selected and ADR-0008 was not
   created.
+
+### M3.2 identity gate
+
+- Local M3 acceptance checkpoint: `3d80149a2572f07935e06a228fe987be0394a1a8`.
+- The checkpoint passed Ruff, strict mypy, 25 Python tests, ESLint, TypeScript
+  checks/builds, 26 Vitest tests, and the serialized 12-case external browser
+  matrix before it was created.
+- Current VNStack verification found an occupied exact GitHub user, an existing
+  npm scope endpoint with unproved control, and a registered `vnstack.com` domain.
+- VNPyKit exact package endpoints were empty, but npm/GitHub control is not
+  secured and the established `vn.py`/`vnpy` framework creates a material
+  confusion question.
+- No identity was approved, no migration was performed, and ADR-0008 remains
+  intentionally absent. See ADR-0007 and `docs/m3.2-identity-clearance.md`.

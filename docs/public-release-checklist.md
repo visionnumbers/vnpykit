@@ -57,6 +57,12 @@ block a local source checkpoint.
 - [x] Registry identity conflicts and candidate names are recorded in ADR-0004.
 - [ ] Resolve ADR-0007's VNForge conflict and select an approved public
   distribution/npm identity. M3.2 is blocked and no rename was performed.
+- [ ] Obtain explicit owner selection of VNStack or VNPyKit after reviewing the
+  M3.2 evidence. For the selected name, demonstrate control of the npm scope and
+  GitHub owner; resolve exact domain ownership and documented confusion risks.
+- [ ] Complete a qualified word-mark search in intended territories and relevant
+  software/service classes. Registry and RDAP 404 responses are not trademark
+  clearance or reservations.
 - [ ] Perform manual screen-reader and high-contrast audits on supported platforms.
 - [ ] Configure private vulnerability reporting and release provenance before any
   public remote, package publication, or release.

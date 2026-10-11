@@ -4,6 +4,56 @@
 - Date: 2026-10-11
 - Verification timestamp: 2026-10-11 13:16 UTC
 
+## M3.2 addendum: VNStack and VNPyKit (2026-10-11)
+
+The owner subsequently identified `VNStack` as the preferred identity and
+`VNPyKit` as its backup. A new direct verification pass was performed between
+14:26 and 14:31 UTC. The detailed endpoint record is preserved in
+`docs/m3.2-identity-clearance.md`.
+
+`VNStack` is blocked for migration in the present state:
+
+- exact PyPI JSON and Simple endpoints, the unscoped npm package, and each
+  proposed scoped npm package returned 404;
+- the exact GitHub account `github.com/vnstack` exists and is not controlled by
+  this repository (HTTP 200; created 2014-10-08);
+- the npm organization endpoint for `vnstack` returned HTTP 200 rather than
+  "scope not found", so control of `@vnstack` has not been established;
+- authoritative Verisign RDAP reports `vnstack.com` registered on 2026-07-12,
+  expiring 2027-07-12, with Cloudflare nameservers. The domain had no resolvable
+  web address during this audit, but registration still prevents treating the
+  exact `.com` identity as available;
+- no exact-name public GitHub repository or public Python import use was found in
+  the reproducible searches, but GitHub code search required authentication and
+  the public code-index fallback rate-limited the audit.
+
+`VNPyKit` is technically cleaner but remains an unapproved fallback:
+
+- exact PyPI, unscoped npm, proposed scoped npm package, GitHub account, exact
+  repository-name search, and `.com`/`.io`/`.dev` RDAP probes returned no object;
+- the npm organization endpoint returned "scope not found"; these negative
+  responses do not reserve any name or prove that account creation/publication
+  will be accepted;
+- the established `vn.py`/VeighNa Python quantitative-trading framework uses the
+  `vnpy` import and a large `vnpy/*` GitHub ecosystem. `VNPyKit` is not exact, but
+  its first four characters and Python-package meaning create a material search
+  and pronunciation confusion risk that the owner must explicitly accept or
+  clear;
+- official trademark search services were reachable, but their interactive
+  searches did not yield a reproducible, authoritative clearance export in this
+  unattended audit. No claim of trademark clearance is made.
+
+### M3.2 decision
+
+Keep the current `VisionPy` implementation unchanged. Do not create ADR-0008 and
+do not migrate packages until the owner selects a candidate and the selected npm
+scope and GitHub owner are demonstrably controlled. For `VNStack`, control or a
+different organization/scope and repository owner is mandatory, together with a
+decision about the registered `.com`. For `VNPyKit`, the owner must explicitly
+accept or professionally clear the `vn.py` similarity and secure the required
+accounts. The owner's stated preference is not the explicit identity approval
+required by the M3.2 brief.
+
 ## Context
 
 The requested preferred identity is VNForge. Migration is permitted only if its
@@ -60,4 +110,3 @@ automatically. ADR-0008 is therefore not created. The owner must choose whether 
 seek professional clearance or approve a new candidate investigation.
 
 `vncore` remains rejected as directed because of its existing software ecosystem.
-
