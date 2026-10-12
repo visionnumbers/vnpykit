@@ -122,3 +122,26 @@ block a local source checkpoint.
   protection and private vulnerability intake.
 - [ ] Complete the manual accessibility and qualified legal/confusion checks and
   obtain explicit tag/publish/release authorization.
+
+## M4.2 final public-alpha gate (2026-10-12)
+
+- [x] Verify local and remote `main` at
+  `395d35cba1635b642a450af859660744fc5ded49` and confirm no remote tag exists.
+- [x] Verify zero Dependabot alerts, immutable action pins, read-only workflow
+  defaults, and conditional OIDC/write permissions.
+- [x] Confirm that a blank PyPI environment is technically compatible because
+  the environment constraint is optional.
+- [ ] After making the repository public, enable branch protection/rulesets,
+  private vulnerability reporting, secret scanning/push protection, and the
+  three release environments with supported reviewer protection.
+- [ ] Bind the PyPI publisher to `public-alpha-pypi` only after that protected
+  environment exists; recheck owner, repository, workflow, project, and
+  environment immediately before publication.
+- [ ] Record detailed Windows accessibility versions/results. VoiceOver/Safari
+  is NOT RUN and remains a blocker unless the supported-platform policy records
+  an explicit owner-approved waiver.
+- [ ] Retain the owner's no-exact-match search as evidence only; record searched
+  registries, territories, classes, marks, dates, and qualified legal review or
+  an explicit risk acceptance. Do not claim trademark clearance.
+- [ ] Obtain separate authorization for public visibility, signed tag creation,
+  interactive npm publication, PyPI publication, and GitHub prerelease creation.

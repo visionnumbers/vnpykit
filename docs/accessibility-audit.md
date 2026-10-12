@@ -17,6 +17,12 @@ value with only 3.94:1 contrast. Muted and status text now use a Canvas-relative
 The following manual release checks require platform assistive technology and are
 not represented as completed automated tests:
 
+Owner report on 2026-10-12: Windows accessibility checks passed. No browser,
+assistive-technology versions, test transcript, or item-by-item mapping was
+provided, so this report is recorded as owner evidence and does not independently
+close the detailed checks below. No macOS test evidence was provided;
+VoiceOver with Safari is **NOT RUN**.
+
 - [ ] NVDA with current Firefox on Windows: labels, validation alert, status update,
   form submission, and logical reading order.
 - [ ] VoiceOver with current Safari on macOS: the same form and status flow.

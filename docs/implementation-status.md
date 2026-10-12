@@ -1,5 +1,39 @@
 # Implementation status
 
+## M4.2 - final public-alpha release gate
+
+Status: audited on 2026-10-12; source candidate remains **NO-GO** for public
+publication until the owner-only protection, manual-evidence, and authorization
+steps in `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
+
+- Local and remote `main` matched at
+  `395d35cba1635b642a450af859660744fc5ded49` before the M4.2 documentation
+  corrections. The only untracked content was the locally generated
+  `manual-demo/` test project.
+- GitHub reports zero Dependabot alerts, zero configured environments, and no
+  enforceable private branch protection/rulesets on the current plan. Secret
+  scanning and code scanning are disabled in the private repository. Private
+  vulnerability reporting becomes available after the repository is public.
+- The owner reports completed available GitHub security setup, passing Windows
+  accessibility checks, and no exact VNPyKit match in the registries searched.
+  These statements are recorded as owner evidence. VoiceOver/Safari is NOT RUN,
+  and no claim of trademark clearance is made.
+- A blank-environment PyPI Pending Trusted Publisher is compatible with the
+  workflow because PyPI's environment constraint is optional. It is less
+  restrictive than an environment-bound publisher; bind it to the protected
+  `public-alpha-pypi` environment after public visibility and before upload.
+- npm account `visionnumbers` owns organization `vnpykit`; all five exact package
+  endpoints still return 404 and therefore require the documented interactive
+  first-publication bootstrap.
+- Fresh M4.2 verification passed Ruff, strict mypy, 25 pytest tests, frozen pnpm
+  install, ESLint, all workspace typechecks/builds, 26 Vitest tests, archive and
+  clean-install checks, 12/12 packed external browser cases, and the 100-cycle
+  Chromium stress gate. Two fixed-epoch artifact sets remained byte-identical
+  with the accepted M4.1 hashes.
+
+See `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` for live evidence,
+commands, artifact results, and the next release execution steps.
+
 ## M4.1 - registry ownership and release infrastructure
 
 Status: local candidate accepted on 2026-10-12; publication remains **NO-GO**.
