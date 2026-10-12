@@ -131,6 +131,14 @@ block a local source checkpoint.
   defaults, and conditional OIDC/write permissions.
 - [x] Confirm that a blank PyPI environment is technically compatible because
   the environment constraint is optional.
+- [x] Complete non-publishing release run
+  [`38249050044`](https://github.com/visionnumbers/vnpykit/actions/runs/38249050044),
+  verify all seven manifest hashes and archives, and confirm every publishing
+  and GitHub-release job was skipped.
+- [x] Review and merge Dependabot PR #3 for `actions/upload-artifact` v7.0.2 at
+  immutable SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9`.
+- [ ] Repeat the non-publishing artifact verification from merge commit
+  `acdfc4279de5e73c40b1d3b8b9fdd3fceb9e055f` before publication.
 - [ ] After making the repository public, enable branch protection/rulesets,
   private vulnerability reporting, secret scanning/push protection, and the
   three release environments with supported reviewer protection.

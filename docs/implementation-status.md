@@ -30,6 +30,18 @@ steps in `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
   clean-install checks, 12/12 packed external browser cases, and the 100-cycle
   Chromium stress gate. Two fixed-epoch artifact sets remained byte-identical
   with the accepted M4.1 hashes.
+- The non-publishing GitHub release dry run
+  [`38249050044`](https://github.com/visionnumbers/vnpykit/actions/runs/38249050044)
+  passed at source `596cc33afa51201e108067cde21e171c03e88b74`. Only `verify`
+  ran; every publishing and GitHub-release job was skipped. Its seven
+  distributions passed manifest, archive, dependency, and clean-install checks.
+  Five remote hashes match the local candidate; the wheel and CLI differences
+  are limited to the wheel's Windows-versus-Linux ZIP platform marker.
+- The successful run exposed the Node.js 20 deprecation in pinned
+  `actions/upload-artifact` v4.6.2. Reviewed Dependabot PR #3 was merged as
+  `acdfc4279de5e73c40b1d3b8b9fdd3fceb9e055f`, updating both workflows to the
+  Node.js 24 v7.0.2 immutable SHA. Re-run the non-publishing workflow before
+  publication.
 
 See `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` for live evidence,
 commands, artifact results, and the next release execution steps.
