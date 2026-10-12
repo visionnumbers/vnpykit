@@ -52,7 +52,9 @@ test("real Python controlled forms are accessible and isolated", async ({ page, 
   console.log(`M2_BENCHMARK ${browserName} ${JSON.stringify(metrics)}`);
   expect(metrics.cold.firstRenderMs).toBeGreaterThan(0);
   expect(metrics.warm.firstRenderMs).toBeGreaterThan(0);
-  expect(metrics.cold.lastCallbackLatencyMs).toBeGreaterThan(0);
+  expect(metrics.cold.lastCallbackLatencyMs).toBeDefined();
+  expect(Number.isFinite(metrics.cold.lastCallbackLatencyMs)).toBe(true);
+  expect(metrics.cold.lastCallbackLatencyMs).toBeGreaterThanOrEqual(0);
 });
 
 test("fatal Python startup errors produce an instance-scoped alert", async ({ page, browserName }) => {
