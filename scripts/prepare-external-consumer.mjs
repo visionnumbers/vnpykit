@@ -1,4 +1,4 @@
-import { cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import { access, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -11,7 +11,11 @@ await rm(consumer, { recursive: true, force: true });
 await mkdir(consumer, { recursive: true });
 
 const node = process.execPath;
-const npmCli = process.env.npm_execpath ?? join(dirname(node), "node_modules", "npm", "bin", "npm-cli.js");
+const npmCli = await firstExisting([
+  process.env.npm_execpath,
+  join(dirname(node), "node_modules", "npm", "bin", "npm-cli.js"),
+  resolve(dirname(node), "..", "lib", "node_modules", "npm", "bin", "npm-cli.js"),
+]);
 const packRoot = join(root, ".vnpykit", "packs");
 const protocolPack = join(packRoot, "vnpykit-protocol-0.1.0-alpha.1.tgz");
 const rendererPack = join(packRoot, "vnpykit-renderer-0.1.0-alpha.1.tgz");
@@ -61,6 +65,19 @@ async function command(executable, args, cwd) {
 
 async function npmCommand(args, cwd) {
   await command(node, [npmCli, ...args], cwd);
+}
+
+async function firstExisting(candidates) {
+  for (const candidate of candidates) {
+    if (!candidate) continue;
+    try {
+      await access(candidate);
+      return candidate;
+    } catch {
+      // Try the next layout supported by an official Node distribution.
+    }
+  }
+  throw new Error(`npm CLI not found for Node executable: ${node}`);
 }
 
 async function waitFor(url, timeoutMs) {
