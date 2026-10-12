@@ -7,15 +7,16 @@ release. A local checkpoint commit does not authorize publishing.
 
 - [x] Run `python scripts/scan-secrets.py` and an independent full-history scanner.
   M4: repository scanner passed 144 files; Gitleaks 8.30.1 scanned all six local
-  commits with no findings. Repeat after the remote and release commit exist.
+  commits with no findings. The final exposure audit repeated both scans across
+  149 tracked files and complete reachable history with no credential finding.
 - [x] Run the repository scanner after the VNPyKit migration (144 files; passed).
-- [ ] Inspect `git status --short --ignored` and `git ls-files`; confirm virtual
+- [x] Inspect `git status --short --ignored` and `git ls-files`; confirm virtual
   environments, caches, `node_modules`, build output, Playwright output, and copied
   Pyodide assets are excluded.
-- [ ] Search tracked text for personal absolute paths, private hosts, credentials,
+- [x] Search tracked text for personal absolute paths, private hosts, credentials,
   private email addresses, and internal issue or customer identifiers.
-- [ ] Review every file larger than 1 MiB and every binary file.
-- [ ] Confirm RFCs, accepted ADRs, contributor policies, and public documentation
+- [x] Review every file larger than 1 MiB and every binary file.
+- [x] Confirm RFCs, accepted ADRs, contributor policies, and public documentation
   contain no confidential material.
 
 ## Legal and dependency review
@@ -62,7 +63,7 @@ block a local source checkpoint.
 - [x] Registry identity conflicts and candidate names are recorded in ADR-0004.
 - [x] Obtain explicit owner selection of VNPyKit and complete the local package,
   import, CLI, npm, runtime, fixture, and documentation migration.
-- [ ] Demonstrate control of the `@vnpykit` npm scope and the
+- [x] Demonstrate control of the `@vnpykit` npm scope and the
   `visionnumbers/vnpykit` GitHub target before publication or push.
 - [ ] Complete a qualified word-mark search in intended territories and relevant
   software/service classes. Registry and RDAP 404 responses are not trademark
@@ -111,10 +112,11 @@ block a local source checkpoint.
 - [x] Scan the current repository and all 12 Git commits with Gitleaks 8.30.1;
   no leak was found. No tracked file exceeds 1 MiB and generated outputs remain
   ignored.
-- [ ] When Actions billing safety is confirmed, run the hardened build-only
+- [x] After confirming Actions billing safety, run the hardened non-publishing
   workflow and compare downloaded artifact hashes.
-- [ ] Confirm or create the PyPI pending Trusted Publisher. Leave its environment
-  blank until `public-alpha-pypi` is actually configured.
+- [x] Confirm the owner-reported PyPI Pending Trusted Publisher with blank
+  environment. Bind it to `public-alpha-pypi` after that protected environment
+  exists and before publication.
 - [ ] Complete the authorized npm first publication in dependency order, then
   configure one Trusted Publisher per existing package within the validation
   window.
@@ -137,8 +139,12 @@ block a local source checkpoint.
   and GitHub-release job was skipped.
 - [x] Review and merge Dependabot PR #3 for `actions/upload-artifact` v7.0.2 at
   immutable SHA `cf430e030ddbb5b0abf93d22962f4752f3646cd9`.
-- [ ] Repeat the non-publishing artifact verification from merge commit
-  `acdfc4279de5e73c40b1d3b8b9fdd3fceb9e055f` before publication.
+- [x] Repeat the non-publishing artifact verification after the upload-artifact
+  update. Run
+  [`38263612430`](https://github.com/visionnumbers/vnpykit/actions/runs/38263612430)
+  passed at source `9012e379844cba764a96e2e0680ea11283989ce5`; all seven Linux
+  hashes matched the accepted manifest and every publishing/release job was
+  skipped.
 - [ ] After making the repository public, enable branch protection/rulesets,
   private vulnerability reporting, secret scanning/push protection, and the
   three release environments with supported reviewer protection.
@@ -153,3 +159,21 @@ block a local source checkpoint.
   an explicit risk acceptance. Do not claim trademark clearance.
 - [ ] Obtain separate authorization for public visibility, signed tag creation,
   interactive npm publication, PyPI publication, and GitHub prerelease creation.
+
+## Final public-exposure audit (2026-10-12)
+
+- [x] Scan all 149 tracked files and complete reachable history for credentials,
+  private paths, sensitive configuration, and unintended binaries; repository
+  scanner and Gitleaks 8.30.1 passed with no credential finding.
+- [x] Record the owner's explicit acceptance that the two historical Git author
+  email addresses will become public. Preserve the existing history and author
+  metadata; do not rewrite or force-push.
+- [x] Verify the GitHub account ID and username for future commits. Configure the
+  repository-local Git identity to use the ID-based GitHub noreply address.
+- [x] Preserve VoiceOver/Safari as **NOT RUN**; no macOS evidence or owner-approved
+  release waiver is recorded.
+- [x] Preserve the owner's trademark searches as preliminary evidence only; no
+  certified legal-clearance claim is made.
+- [ ] After separately authorized public visibility, immediately enable the
+  `main` ruleset, exact required CI checks, private vulnerability reporting,
+  secret scanning/push protection, CodeQL, and protected release environments.

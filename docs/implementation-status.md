@@ -2,9 +2,10 @@
 
 ## M4.2 - final public-alpha release gate
 
-Status: audited on 2026-10-12; source candidate remains **NO-GO** for public
-publication until the owner-only protection, manual-evidence, and authorization
-steps in `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
+Status: audited on 2026-10-12; source exposure preparation is complete, while
+package publication remains **NO-GO** until the owner-only protection,
+manual-evidence, and authorization steps in
+`docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
 
 - Local and remote `main` matched at
   `395d35cba1635b642a450af859660744fc5ded49` before the M4.2 documentation
@@ -40,8 +41,20 @@ steps in `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
 - The successful run exposed the Node.js 20 deprecation in pinned
   `actions/upload-artifact` v4.6.2. Reviewed Dependabot PR #3 was merged as
   `acdfc4279de5e73c40b1d3b8b9fdd3fceb9e055f`, updating both workflows to the
-  Node.js 24 v7.0.2 immutable SHA. Re-run the non-publishing workflow before
-  publication.
+  Node.js 24 v7.0.2 immutable SHA.
+- The final non-publishing run
+  [`38263612430`](https://github.com/visionnumbers/vnpykit/actions/runs/38263612430)
+  passed at source `9012e379844cba764a96e2e0680ea11283989ce5`. The `verify`
+  job passed, all four publication/release jobs were skipped, upload-artifact
+  v7.0.2 completed without the prior deprecation warning, and all seven Linux
+  archive hashes reproduced the accepted manifest.
+- The final exposure scan covered 149 tracked files and complete reachable Git
+  history without finding credentials or private local paths. The owner accepts
+  public exposure of the two historical Git author email addresses and requires
+  preserving existing history and metadata. Future commits use the verified
+  GitHub ID-based noreply address.
+- VoiceOver/Safari remains **NOT RUN**. The owner's trademark searches remain
+  preliminary evidence and are not certified legal clearance.
 
 See `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` for live evidence,
 commands, artifact results, and the next release execution steps.
