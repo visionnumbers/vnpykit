@@ -42,7 +42,7 @@ const STYLES = `
 .vp-column { display: flex; flex-direction: column; }
 .vp-container { box-sizing: border-box; }
 .vp-text { margin: 0; }
-.vp-text--muted { color: GrayText; }
+.vp-text--muted { color: CanvasText; color: color-mix(in srgb, CanvasText 72%, Canvas); }
 .vp-button { font: inherit; padding: .5rem .8rem; cursor: pointer; }
 .vp-button:disabled { cursor: default; opacity: .6; }
 `;
@@ -182,4 +182,3 @@ function applyProps(element: HTMLElement, kind: WidgetKind, props: Record<string
     else if (typeof props.width === "number") element.style.width = `${props.width}px`;
   }
 }
-

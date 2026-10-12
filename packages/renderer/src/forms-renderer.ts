@@ -40,7 +40,7 @@ const STYLES = `
 .vp-row { flex-direction: row; flex-wrap: wrap; }
 .vp-container { box-sizing: border-box; }
 .vp-text { margin: 0; }
-.vp-text--muted { color: GrayText; }
+.vp-text--muted { color: CanvasText; color: color-mix(in srgb, CanvasText 72%, Canvas); }
 .vp-button, .vp-input { font: inherit; }
 .vp-button { padding: .5rem .8rem; cursor: pointer; }
 .vp-button:disabled { cursor: default; opacity: .6; }
@@ -49,7 +49,7 @@ const STYLES = `
 .vp-input { box-sizing: border-box; min-width: 12rem; padding: .5rem .6rem; border: 1px solid GrayText; border-radius: .25rem; }
 .vp-check-label { display: inline-flex; align-items: center; gap: .45rem; cursor: pointer; }
 .vp-error { color: #b42318; font-size: .875rem; }
-.vp-status { padding: .75rem; color: GrayText; }
+.vp-status { padding: .75rem; color: CanvasText; color: color-mix(in srgb, CanvasText 72%, Canvas); }
 .vp-failure { padding: .75rem; color: #b42318; border: 1px solid currentColor; border-radius: .25rem; }
 .vp-button:focus-visible, .vp-input:focus-visible, .vp-checkbox:focus-visible { outline: 3px solid Highlight; outline-offset: 2px; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }

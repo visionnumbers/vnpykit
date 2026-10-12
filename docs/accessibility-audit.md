@@ -10,6 +10,10 @@ M4 automated result (2026-10-11): PASS on Chromium 156.0.8078.4 with Axe 4.13.0;
 zero critical or serious findings after correcting the demo scratch mount to use
 a valid named `region`. This automated result does not complete the manual items.
 
+GitHub's Linux Chromium run on 2026-10-12 exposed a platform-specific `GrayText`
+value with only 3.94:1 contrast. Muted and status text now use a Canvas-relative
+72% color mix with a `CanvasText` fallback; the focused Axe rerun passed locally.
+
 The following manual release checks require platform assistive technology and are
 not represented as completed automated tests:
 

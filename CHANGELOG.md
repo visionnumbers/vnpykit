@@ -5,6 +5,8 @@
 - Prepare public-alpha package metadata, per-package README files, deterministic
   artifact verification, checksum reporting, Trusted Publishing workflow gates,
   Dependabot configuration, and automated WCAG 2 A/AA checks.
+- Use a theme-relative muted text color that meets WCAG AA contrast across the
+  Linux and Windows Chromium environments used by CI and local acceptance.
 - Keep publication blocked until namespace control, private vulnerability
   reporting, legal review, and manual assistive-technology checks are complete.
 
