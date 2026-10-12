@@ -83,20 +83,3 @@ app.run()
   await expect(scratch.getByText("Recovery: 2")).toBeAttached();
   await page.evaluate(() => window.recoveryApp.dispose());
 });
-
-declare global {
-  interface Window {
-    vnpykitDemo: {
-      ready: Promise<void>;
-      getFirst(): {
-        generation: string;
-        status: string;
-        metrics: { runtimeReadyMs?: number; firstRenderMs?: number; lastCallbackLatencyMs?: number };
-        stop(): Promise<void>;
-      };
-      getSecond(): { metrics: { runtimeReadyMs?: number; firstRenderMs?: number } };
-      mountSource(source: string): { ready: Promise<void>; dispose(): Promise<void> };
-    };
-    recoveryApp: { dispose(): Promise<void> };
-  }
-}

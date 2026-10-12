@@ -95,7 +95,7 @@ test("100-cycle release stress", async ({ page, browserName }) => {
   test.setTimeout(1_800_000);
   await page.goto("/");
   await page.evaluate(() => window.vnpykitDemo.ready);
-  const memory: Array<{ cycle: number; heapBytes?: number; owners: number }> = [];
+  const memory: Array<{ cycle: number; heapBytes: number | undefined; owners: number }> = [];
   for (let cycle = 0; cycle < 100; cycle += 1) {
     await page.evaluate(() => window.vnpykitDemo.remountFirst());
     if ((cycle + 1) % 10 === 0) {
@@ -111,21 +111,3 @@ test("100-cycle release stress", async ({ page, browserName }) => {
   console.log(`M3_STRESS_MEMORY ${JSON.stringify(memory)}`);
   expect(memory.every((sample) => sample.owners === 2)).toBe(true);
 });
-
-declare global {
-  interface Window {
-    failedApp: { dispose(): Promise<void> };
-    vnpykitDemo: {
-      ready: Promise<void>;
-      getFirst(): {
-        generation: string;
-        status: string;
-        metrics: { runtimeReadyMs?: number; firstRenderMs?: number; lastCallbackLatencyMs?: number };
-        stop(): Promise<void>;
-      };
-      getSecond(): { metrics: { runtimeReadyMs?: number; firstRenderMs?: number } };
-      remountFirst(): Promise<void>;
-      mountSource(source: string): { ready: Promise<void>; dispose(): Promise<void> };
-    };
-  }
-}

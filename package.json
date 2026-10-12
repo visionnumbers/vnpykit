@@ -13,7 +13,7 @@
     "lint": "eslint .",
     "test": "corepack pnpm build && vitest run packages",
     "test:e2e": "playwright test",
-    "typecheck": "corepack pnpm build && corepack pnpm -r typecheck"
+    "typecheck": "tsc -p tsconfig.json && corepack pnpm build && corepack pnpm -r typecheck"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
