@@ -1,5 +1,43 @@
 # Implementation status
 
+## M4.1 - registry ownership and release infrastructure
+
+Status: local candidate accepted on 2026-10-12; publication remains **NO-GO**.
+
+- The verified M4.1 parent on `main` and `origin/main` is
+  `496c98817fa83842dda44961b01166a3ce6f9ea7`. The reviewed M4.1 changes are
+  prepared for a normal private-repository commit and push without rewriting
+  ancestry.
+- GitHub authentication and administrator access to the private
+  `visionnumbers/vnpykit` repository are verified. The latest baseline CI run
+  succeeded. The repository currently has no environments; private branch
+  protection is blocked by the account plan, and private vulnerability
+  reporting is unavailable in the current repository state.
+- npm authentication, `vnpykit` organization ownership, and `auth-and-writes`
+  2FA are verified. The five target packages do not yet exist, so their package
+  ownership and Trusted Publishers cannot yet be configured.
+- Both exact PyPI `vnpykit` endpoints return 404. Pending-publisher state is
+  private account data and still requires owner confirmation; a 404 does not
+  reserve the name.
+- CI and release workflows now use fixed Ubuntu 24.04 runners and immutable
+  current action SHAs. The build-only workflow creates all seven audited
+  artifacts. The publication workflow has separate `publish` and `publish_npm`
+  gates, an exact typed authorization phrase, and a verification-only npm
+  bootstrap path.
+- npm package metadata uses the `alpha` dist-tag and does not request provenance
+  from the current private repository. Trusted Publishing will generate
+  provenance automatically after the source repository is public.
+- Fresh fixed-epoch Python and npm artifacts were byte-identical across two
+  builds. All Python, TypeScript, archive, consumer, security, dependency,
+  accessibility automation, 12-case browser, and 100-cycle stress gates passed.
+- The build-only dry run is non-publishing, but private-repository Actions usage
+  could not be proven to meet the no-charge constraint. It must remain
+  undispatched unless billing safety is confirmed.
+
+See `docs/releases/v0.1.0-alpha.1-acceptance.md` and
+`docs/releases/v0.1.0-alpha.1-registry-bootstrap.md` for evidence and the
+remaining owner-only actions.
+
 ## M4 — public-alpha release engineering
 
 Status: local release candidate accepted with a NO-GO publication verdict on

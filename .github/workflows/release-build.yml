@@ -8,15 +8,47 @@ permissions:
 
 jobs:
   build-only:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
+    env:
+      SOURCE_DATE_EPOCH: "1760140800"
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: "3.12.4"
-      - run: python -m pip install "build==1.6.1"
-      - run: python -m build packages/python-sdk
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24.20.0"
+          package-manager-cache: false
+      - run: corepack enable
+      - run: corepack install
+      - run: corepack pnpm install --frozen-lockfile
+      - run: python -m pip install "build==1.6.1" "check-wheel-contents==0.6.3" "twine==7.0.0"
+      - run: node scripts/verify-release-versions.mjs
+        env:
+          RELEASE_TAG: v0.1.0a1
+      - run: python -m build packages/python-sdk --outdir .release/python
+      - run: python -m twine check .release/python/*
+      - run: python -m check_wheel_contents .release/python/*.whl
+      - name: Stage the verified wheel for CLI assembly
+        run: |
+          mkdir -p packages/python-sdk/dist
+          cp .release/python/vnpykit-0.1.0a1-py3-none-any.whl packages/python-sdk/dist/
+      - run: corepack pnpm build
+      - run: mkdir -p .release/npm
+      - run: corepack pnpm --filter @vnpykit/protocol pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/renderer pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/runtime-pyodide pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/embed pack --pack-destination .release/npm
+      - run: corepack pnpm --filter @vnpykit/cli pack --pack-destination .release/npm
+      - run: python scripts/audit-release-artifacts.py .release
+      - run: sha256sum .release/python/* .release/npm/* > .release/SHA256SUMS
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: vnpykit-python-dist
-          path: packages/python-sdk/dist/*
+          name: vnpykit-release-candidate-${{ github.sha }}
+          path: |
+            .release/SHA256SUMS
+            .release/python/*
+            .release/npm/*
+          if-no-files-found: error
+          retention-days: 14

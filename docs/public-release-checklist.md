@@ -89,3 +89,36 @@ block a local source checkpoint.
   environments and OIDC publishers, and enable private vulnerability reporting.
 - [ ] Complete qualified trademark/legal review and every manual accessibility
   item, then obtain explicit authorization for tag/push/publication/release.
+
+## M4.1 registry and release-infrastructure audit (2026-10-12)
+
+- [x] Verify the M4.1 parent on local and remote `main` at
+  `496c98817fa83842dda44961b01166a3ce6f9ea7` and preserve ancestry with a
+  normal private-repository push.
+- [x] Verify GitHub account `visionnumbers`, repository ADMIN access, npm user
+  `visionnumbers`, npm `vnpykit` organization owner role, and npm
+  `auth-and-writes` 2FA.
+- [x] Confirm all five npm package endpoints and both exact PyPI project
+  endpoints return 404. Treat this only as absence at check time.
+- [x] Pin every GitHub Action to an immutable reviewed SHA, use Ubuntu 24.04,
+  isolate OIDC/write permissions, require an exact typed publication phrase,
+  and validate workflows with actionlint 1.7.12.
+- [x] Rebuild the wheel, sdist, and five npm tarballs twice; pass archive,
+  metadata, embedded-wheel, checksum, clean-install, and reproducibility gates.
+- [x] Pass Ruff, strict mypy, 25 pytest tests, ESLint, all workspace typechecks
+  and builds, 26 Vitest tests, all dependency audits, the independent consumer,
+  the 12/12 external matrix, and the 100-cycle stress gate.
+- [x] Scan the current repository and all 12 Git commits with Gitleaks 8.30.1;
+  no leak was found. No tracked file exceeds 1 MiB and generated outputs remain
+  ignored.
+- [ ] When Actions billing safety is confirmed, run the hardened build-only
+  workflow and compare downloaded artifact hashes.
+- [ ] Confirm or create the PyPI pending Trusted Publisher. Leave its environment
+  blank until `public-alpha-pypi` is actually configured.
+- [ ] Complete the authorized npm first publication in dependency order, then
+  configure one Trusted Publisher per existing package within the validation
+  window.
+- [ ] Resolve the private-repository plan limits for branch/environment reviewer
+  protection and private vulnerability intake.
+- [ ] Complete the manual accessibility and qualified legal/confusion checks and
+  obtain explicit tag/publish/release authorization.

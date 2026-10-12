@@ -2,6 +2,12 @@
 
 ## 0.1.0-alpha.1 - Unreleased
 
+- Complete the M4.1 registry and release-infrastructure audit: verify GitHub and
+  npm ownership, harden manual publication gates, pin current immutable Actions
+  and Ubuntu 24.04 runners, expand the build-only workflow to all seven release
+  artifacts, default npm packages to the `alpha` dist-tag, and document the
+  owner-only PyPI/npm bootstrap and rollback procedure.
+
 - Prepare public-alpha package metadata, per-package README files, deterministic
   artifact verification, checksum reporting, Trusted Publishing workflow gates,
   Dependabot configuration, and automated WCAG 2 A/AA checks.

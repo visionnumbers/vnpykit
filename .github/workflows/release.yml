@@ -12,19 +12,34 @@ on:
         required: true
         type: boolean
         default: false
+      publish_npm:
+        description: Publish npm packages; keep false for the verified first-publication bootstrap
+        required: true
+        type: boolean
+        default: false
+      authorization:
+        description: Enter PUBLISH VNPYKIT 0.1.0 ALPHA 1 when publish is true
+        required: false
+        type: string
+        default: ""
 
 permissions:
   contents: read
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     env:
       SOURCE_DATE_EPOCH: "1760140800"
     steps:
+      - name: Validate explicit publication authorization
+        if: ${{ inputs.publish }}
+        env:
+          RELEASE_AUTHORIZATION: ${{ inputs.authorization }}
+        run: test "$RELEASE_AUTHORIZATION" = "PUBLISH VNPYKIT 0.1.0 ALPHA 1"
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
         with:
-          ref: ${{ inputs.tag }}
+          ref: ${{ inputs.publish && inputs.tag || github.sha }}
           fetch-depth: 0
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
@@ -98,7 +113,7 @@ jobs:
   publish-pypi:
     if: ${{ inputs.publish }}
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: public-alpha-pypi
     permissions:
       contents: read
@@ -114,9 +129,9 @@ jobs:
           attestations: true
 
   publish-npm:
-    if: ${{ inputs.publish }}
+    if: ${{ inputs.publish && inputs.publish_npm }}
     needs: verify
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     environment: public-alpha-npm
     permissions:
       contents: read
@@ -137,16 +152,39 @@ jobs:
           path: .release
       - name: Publish in dependency order with OIDC
         run: |
-          npm publish .release/npm/vnpykit-protocol-0.1.0-alpha.1.tgz --access public
-          npm publish .release/npm/vnpykit-renderer-0.1.0-alpha.1.tgz --access public
-          npm publish .release/npm/vnpykit-runtime-pyodide-0.1.0-alpha.1.tgz --access public
-          npm publish .release/npm/vnpykit-embed-0.1.0-alpha.1.tgz --access public
-          npm publish .release/npm/vnpykit-cli-0.1.0-alpha.1.tgz --access public
+          npm publish .release/npm/vnpykit-protocol-0.1.0-alpha.1.tgz --access public --tag alpha
+          npm publish .release/npm/vnpykit-renderer-0.1.0-alpha.1.tgz --access public --tag alpha
+          npm publish .release/npm/vnpykit-runtime-pyodide-0.1.0-alpha.1.tgz --access public --tag alpha
+          npm publish .release/npm/vnpykit-embed-0.1.0-alpha.1.tgz --access public --tag alpha
+          npm publish .release/npm/vnpykit-cli-0.1.0-alpha.1.tgz --access public --tag alpha
+
+  verify_npm_bootstrap:
+    if: ${{ inputs.publish && !inputs.publish_npm }}
+    needs: verify
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          ref: ${{ inputs.tag }}
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "24.20.0"
+          package-manager-cache: false
+      - run: node scripts/verify-published-npm.mjs
 
   github-release:
-    if: ${{ inputs.publish }}
-    needs: [verify, publish-pypi, publish-npm]
-    runs-on: ubuntu-latest
+    if: >-
+      ${{
+        always() &&
+        inputs.publish &&
+        needs.verify.result == 'success' &&
+        needs.publish-pypi.result == 'success' &&
+        (needs.publish-npm.result == 'success' || needs.verify_npm_bootstrap.result == 'success')
+      }}
+    needs: [verify, publish-pypi, publish-npm, verify_npm_bootstrap]
+    runs-on: ubuntu-24.04
     environment: public-alpha-github
     permissions:
       contents: write

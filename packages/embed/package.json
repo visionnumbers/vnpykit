@@ -17,7 +17,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/visionnumbers/vnpykit.git", "directory": "packages/embed" },
   "homepage": "https://github.com/visionnumbers/vnpykit#readme",
   "bugs": { "url": "https://github.com/visionnumbers/vnpykit/issues" },
-  "publishConfig": { "access": "public", "provenance": true },
+  "publishConfig": { "access": "public", "tag": "alpha" },
   "scripts": {
     "build": "node scripts/build.mjs && tsc -p tsconfig.json --emitDeclarationOnly && vite build && vite build --config vite.worker.config.ts",
     "test": "vitest run",

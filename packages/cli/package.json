@@ -15,7 +15,7 @@
   "repository": { "type": "git", "url": "git+https://github.com/visionnumbers/vnpykit.git", "directory": "packages/cli" },
   "homepage": "https://github.com/visionnumbers/vnpykit#readme",
   "bugs": { "url": "https://github.com/visionnumbers/vnpykit/issues" },
-  "publishConfig": { "access": "public", "provenance": true },
+  "publishConfig": { "access": "public", "tag": "alpha" },
   "scripts": {
     "build": "node scripts/prepare-release-assets.mjs && tsc -p tsconfig.json",
     "test": "vitest run",
