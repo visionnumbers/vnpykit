@@ -25,8 +25,9 @@ release. A local checkpoint commit does not authorize publishing.
 - [x] Record the preliminary VNPyKit trademark evidence and the owner's explicit
   residual-risk acceptance for this alpha. No formal or worldwide clearance is
   claimed; qualified review remains recommended for later releases.
-- [ ] Confirm project copyright ownership and replace the placeholder Apache-2.0
-  appendix text only if counsel or the owner requires an explicit notice.
+- [x] Owner confirmed the necessary ownership or licensing and distribution
+  rights to release the original source under Apache-2.0, subject to preserving
+  applicable third-party licenses and notices.
 - [x] Review `THIRD_PARTY_NOTICES.md`, dependency licenses, lockfiles, and vendored
   artifact hashes; retain upstream license files and source links.
 - [x] Run `corepack pnpm audit --audit-level high` and the Python dependency audit
@@ -43,8 +44,9 @@ release. A local checkpoint commit does not authorize publishing.
   branches, required CI checks, and least-privilege workflow permissions.
 - [x] Review workflow actions and tool versions, release provenance, and artifact
   checksums. Test from a clean clone.
-- [ ] Obtain explicit authorization before creating a remote, pushing, publishing
-  packages, or creating a release.
+- [x] Obtain explicit authorization before creating the remote, pushing,
+  publishing packages, and creating the first public-alpha prerelease. Future
+  releases still require separate authorization.
 
 ## M1 checkpoint audit (2026-10-10)
 
@@ -121,9 +123,9 @@ block a local source checkpoint.
   workflow and compare downloaded artifact hashes.
 - [x] Confirm the owner-reported PyPI Pending Trusted Publisher is bound to exact
   environment `public-alpha-pypi`.
-- [ ] Complete the authorized npm first publication in dependency order, then
-  configure one Trusted Publisher per existing package within the validation
-  window.
+- [x] Complete the authorized npm first publication in dependency order.
+- [ ] Configure one Trusted Publisher per existing npm package for a future
+  release and validate the connection within npm's allowed window.
 - [x] Resolve the former private-repository limits by making the repository public
   and enabling rulesets, scanning, CodeQL, and private vulnerability intake.
   Release environments still have no required reviewers.
@@ -163,8 +165,8 @@ block a local source checkpoint.
   registries, territories, classes, marks, dates, and qualified legal review or
   an explicit risk acceptance. Do not claim trademark clearance.
 - [x] Complete the separately authorized public visibility and signed tag steps.
-- [ ] Obtain separate authorization for interactive npm publication, PyPI
-  publication, and GitHub prerelease creation.
+- [x] Obtain separate authorization for interactive npm publication, PyPI
+  publication, and GitHub prerelease creation; complete the authorized release.
 
 ## Final public-exposure audit (2026-10-12)
 
@@ -199,9 +201,28 @@ block a local source checkpoint.
 - [x] Independently verify live Private Vulnerability Reporting, secret scanning,
   push protection, full-SHA enforcement, CodeQL, Dependabot, and branch/tag
   rulesets.
-- [ ] Merge the post-tag documentation PR. Its contents do not automatically
+- [x] Merge the post-tag documentation PR. Its contents do not automatically
   appear in the immutable tag.
-- [ ] Add the post-tag trademark/accessibility disclosure to the GitHub
+- [x] Add the post-tag trademark/accessibility disclosure to the GitHub
   prerelease description before announcement.
-- [ ] Obtain explicit authorization for interactive npm publication, the PyPI
+- [x] Obtain explicit authorization for interactive npm publication, the PyPI
   workflow, and GitHub prerelease creation.
+
+## Post-release consumer verification (2026-10-13)
+
+- [x] Install `vnpykit==0.1.0a1` from public PyPI into a fresh Python 3.12
+  virtual environment; verify metadata, import, version, and documented APIs.
+- [x] Install all five `@vnpykit/*@0.1.0-alpha.1` packages from public npm with
+  Node.js 24; verify exact dependencies, ESM exports, TypeScript declarations,
+  and zero npm audit findings.
+- [x] Use the published CLI to create and build a starter application.
+- [x] Start the generated application and pass a Playwright Chromium smoke test
+  covering Worker/Pyodide startup, DOM rendering, reactive form interaction, and
+  form submission with zero console errors or failed requests.
+- [x] Download the wheel, sdist, and five npm archives from their public
+  registries; verify registry integrity metadata and exact agreement with the
+  GitHub prerelease `SHA256SUMS`.
+- [x] Keep npm dist-tags unchanged by owner decision: `alpha` and `latest` both
+  resolve to experimental version `0.1.0-alpha.1`; no stable release exists.
+- [x] Preserve VoiceOver/Safari as **NOT RUN** and preserve the preliminary
+  trademark evidence and residual-risk acceptance without claiming clearance.
