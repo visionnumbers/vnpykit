@@ -27,3 +27,22 @@ Protocol and lifecycle failures surface as stable error codes described in
 [protocol v1](protocol-v1.md). The public type hints are authoritative for exact
 constructor and callback signatures.
 
+Callbacks may accept no positional arguments or one typed event argument. When a
+callback needs a captured application value but not the event, return a true
+zero-argument handler from a factory:
+
+```python
+def make_complete_handler(task_id: int):
+    def handle_complete() -> None:
+        complete_task(task_id)
+
+    return handle_complete
+
+
+Button("Complete", on_click=make_complete_handler(task.id))
+```
+
+Avoid using a defaulted positional parameter as a capture, such as
+`lambda task_id=task_id: ...`. It is still a one-argument callback, so VNPyKit
+passes the typed event to it. This distinction was confirmed while correcting
+the independent M5 Task Manager application.

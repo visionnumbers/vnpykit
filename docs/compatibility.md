@@ -1,6 +1,6 @@
 # Compatibility
 
-The `0.1.0a1` release candidate is pinned to:
+The public alpha `0.1.0a1` is pinned to:
 
 | Surface | Supported baseline |
 | --- | --- |
@@ -19,3 +19,9 @@ Mobile browsers, older browser engines, alternative Python runtimes, server-side
 rendering, and Node releases before 24 are not part of this alpha's verified
 support matrix.
 
+The independent M5 Task Manager validation passed its documented manual flows in
+Playwright Chromium, Firefox, and WebKit, plus 10 repeated Chromium runs. This is
+application-scenario evidence, not a claim of complete browser or framework API
+coverage. Playwright WebKit does not establish Safari/VoiceOver compatibility;
+that manual macOS check remains **NOT RUN**. See
+[M5 real app validation](m5-real-app-validation.md).

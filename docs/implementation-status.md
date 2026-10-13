@@ -1,5 +1,31 @@
 # Implementation status
 
+## M5 real app validation - 2026-10-13
+
+Status: the independent Python-authored Task Manager validation passed its
+documented manual, browser, repetition, and corrected static-deployment flows.
+
+- Beginner v1 passed 5/5 manual scenarios, intermediate v2 passed 8/8, and
+  advanced v3 passed 11/11 after correcting an application-level callback
+  signature. A zero-argument callback factory is required when capturing a task
+  identifier without consuming the typed event.
+- Playwright Chromium, Firefox, and WebKit passed the tested flows. Chromium
+  `--repeat-each=10` passed 10/10. These are scenario results rather than full
+  API, engine, or production-readiness certification.
+- The published CLI static build completed. On Windows, the initial Python HTTP
+  server served `.mjs` as `text/plain`, causing the browser to reject
+  `pyodide.mjs` and report `BOOT_FAILED`. Explicitly mapping `.mjs` to
+  `text/javascript` fixed direct module import and the tested static flows.
+- Static task creation, completion, editing, and deletion passed. A 100-record
+  Python data simulation passed; it did not create or validate 100 interactive
+  UI widgets.
+- Persistence and dynamic structural widgets remain unsupported, the alpha API
+  is not declared stable, and production readiness is not claimed.
+- Safari with VoiceOver remains **NOT RUN** under the existing alpha waiver.
+
+See [M5 real app validation](m5-real-app-validation.md) for the evidence boundary
+and the deployment fix.
+
 ## Final alpha release sign-off - 2026-10-13
 
 Status: signed release artifacts are frozen and verified. npm first publication
