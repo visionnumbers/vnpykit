@@ -4,7 +4,7 @@
 
 | Version | Supported |
 | --- | --- |
-| `0.1.0a1` public-alpha candidate | Yes, after publication |
+| `0.1.0a1` public alpha | Yes |
 | Earlier development snapshots | No |
 
 VNPyKit is prerelease software. Security fixes may require an upgrade to the
