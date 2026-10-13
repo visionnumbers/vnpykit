@@ -16,13 +16,12 @@ Do not open a public issue for a suspected vulnerability and do not include
 credentials, exploit data, or private user data in a public channel.
 
 The intended reporting channel is GitHub Private Vulnerability Reporting on
-`visionnumbers/vnpykit`. GitHub exposes that feature for public repositories, so
-it cannot be enabled while this repository remains private. Enable it immediately
-after the public-visibility transition and before announcing or publishing the
-alpha. Until then, disclose only through a private channel explicitly provided by
-the project owner. Include affected versions, impact, reproduction steps, and
-suggested mitigations when available. Maintainers will acknowledge receipt and
-coordinate disclosure timing through that private channel.
+`visionnumbers/vnpykit`. Open the repository's **Security** tab, choose
+**Advisories**, and select **Report a vulnerability**. Private Vulnerability
+Reporting was independently verified as enabled on 2026-10-13. Include affected
+versions, impact, reproduction steps, and suggested mitigations when available.
+Maintainers will acknowledge receipt and coordinate disclosure timing through
+the private advisory.
 
 ## Security boundary
 

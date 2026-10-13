@@ -1,28 +1,49 @@
 # Implementation status
 
+## Final alpha release sign-off - 2026-10-13
+
+Status: signed release artifacts are frozen and verified. npm first publication
+is a **CONDITIONAL GO** after the post-tag documentation PR is merged and the
+owner gives explicit publication authorization.
+
+- Signed tag `v0.1.0a1` remains at
+  `35b14d68a0bd70e1f1f8773e793545dc5feeabe9` and verifies with the owner's SSH
+  signing key.
+- Tag-ref dry run
+  [`38280346291`](https://github.com/visionnumbers/vnpykit/actions/runs/38280346291)
+  passed all release gates and seven artifact hashes; every publication/release
+  job was skipped.
+- Live GitHub checks confirm Private Vulnerability Reporting, secret scanning,
+  push protection, full-SHA enforcement, CodeQL default setup, Dependabot, and
+  protected main/tag rulesets are active.
+- The owner confirms the PyPI Pending Trusted Publisher is bound to exact
+  environment `public-alpha-pypi` and revalidates npm user `visionnumbers` as
+  owner of organization `vnpykit`.
+- The owner accepts the documented residual trademark/brand-confusion risk for
+  this alpha without claiming formal legal clearance.
+- VoiceOver/Safari remains **NOT RUN**; the owner accepts a transparent alpha
+  waiver and no unperformed test is marked PASS.
+- This sign-off documentation postdates the signed tag. It will not appear in
+  the immutable tagged snapshot; the GitHub prerelease description must include
+  the disclosure before announcement without moving the tag.
+
 ## M4.2 - final public-alpha release gate
 
-Status: audited on 2026-10-12; source exposure preparation is complete, while
-package publication remains **NO-GO** until the owner-only protection,
-manual-evidence, and authorization steps in
-`docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` are complete.
+Status: the 2026-10-12 M4.2 audit is retained as historical evidence and is
+superseded for release decisions by the 2026-10-13 final sign-off above.
 
 - Local and remote `main` matched at
   `395d35cba1635b642a450af859660744fc5ded49` before the M4.2 documentation
   corrections. The only untracked content was the locally generated
   `manual-demo/` test project.
-- GitHub reports zero Dependabot alerts, zero configured environments, and no
-  enforceable private branch protection/rulesets on the current plan. Secret
-  scanning and code scanning are disabled in the private repository. Private
-  vulnerability reporting becomes available after the repository is public.
-- The owner reports completed available GitHub security setup, passing Windows
-  accessibility checks, and no exact VNPyKit match in the registries searched.
-  These statements are recorded as owner evidence. VoiceOver/Safari is NOT RUN,
-  and no claim of trademark clearance is made.
-- A blank-environment PyPI Pending Trusted Publisher is compatible with the
-  workflow because PyPI's environment constraint is optional. It is less
-  restrictive than an environment-bound publisher; bind it to the protected
-  `public-alpha-pypi` environment after public visibility and before upload.
+- The repository is now public. Live API checks confirm the branch/tag rulesets,
+  three exact-tag environments, Private Vulnerability Reporting, secret scanning,
+  push protection, CodeQL, Dependabot, and full-SHA enforcement are active.
+- Windows accessibility remains owner-reported. VoiceOver/Safari is **NOT RUN**
+  under an explicit alpha waiver, and the owner accepts the recorded preliminary
+  trademark risk without claiming legal clearance.
+- The owner confirms the PyPI Pending Trusted Publisher is bound to protected
+  environment `public-alpha-pypi`.
 - npm account `visionnumbers` owns organization `vnpykit`; all five exact package
   endpoints still return 404 and therefore require the documented interactive
   first-publication bootstrap.
@@ -53,8 +74,9 @@ manual-evidence, and authorization steps in
   public exposure of the two historical Git author email addresses and requires
   preserving existing history and metadata. Future commits use the verified
   GitHub ID-based noreply address.
-- VoiceOver/Safari remains **NOT RUN**. The owner's trademark searches remain
-  preliminary evidence and are not certified legal clearance.
+- VoiceOver/Safari remains **NOT RUN** under the owner-approved alpha waiver.
+  The owner's trademark searches remain preliminary evidence; the owner accepts
+  the residual alpha risk without claiming certified legal clearance.
 
 See `docs/releases/v0.1.0-alpha.1-m4.2-release-gate.md` for live evidence,
 commands, artifact results, and the next release execution steps.
@@ -83,9 +105,9 @@ Status: local candidate accepted on 2026-10-12; publication remains **NO-GO**.
   artifacts. The publication workflow has separate `publish` and `publish_npm`
   gates, an exact typed authorization phrase, and a verification-only npm
   bootstrap path.
-- npm package metadata uses the `alpha` dist-tag and does not request provenance
-  from the current private repository. Trusted Publishing will generate
-  provenance automatically after the source repository is public.
+- npm package metadata uses the `alpha` dist-tag and did not request provenance
+  from the then-private repository. The repository is now public; future Trusted
+  Publishing can generate provenance after package-level publishers exist.
 - Fresh fixed-epoch Python and npm artifacts were byte-identical across two
   builds. All Python, TypeScript, archive, consumer, security, dependency,
   accessibility automation, 12-case browser, and 100-cycle stress gates passed.
