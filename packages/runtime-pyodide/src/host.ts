@@ -70,7 +70,26 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
   let stopResolver: (() => void) | undefined;
   let disposeAckResolver: (() => void) | undefined;
   let lastEventAt: number | undefined;
-  const errorListeners = new Set<(error: VNPyKitErrorEvent) => void>();
+  let portMessageListener: ((event: MessageEvent<unknown>) => void) | undefined;
+  let workerErrorListener: ((event: ErrorEvent) => void) | undefined;
+  let errorListeners: Set<(error: VNPyKitErrorEvent) => void> | undefined = new Set();
+  const releaseHostResources = (): void => {
+    if (worker !== undefined && workerErrorListener !== undefined) worker.removeEventListener("error", workerErrorListener);
+    workerErrorListener = undefined;
+    worker?.terminate();
+    worker = undefined;
+    if (port !== undefined && portMessageListener !== undefined) port.removeEventListener("message", portMessageListener);
+    portMessageListener = undefined;
+    port?.close();
+    port = undefined;
+    renderer?.dispose();
+    renderer = undefined;
+    errorListeners?.clear();
+    errorListeners = undefined;
+    stopResolver = undefined;
+    disposeAckResolver = undefined;
+    lastEventAt = undefined;
+  };
   const trace = (stage: string, detail: Record<string, unknown> = {}): void => {
     console.debug("VNPYKIT_LIFECYCLE", { appId, generation, stage, elapsedMs: performance.now() - createdAt, ...detail });
   };
@@ -83,9 +102,10 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
   });
 
   const fail = (error: VNPyKitErrorEvent): void => {
+    if (disposed) return;
     status = "failed";
     renderer?.showFailure(`${error.code}: ${error.message}`);
-    for (const listener of errorListeners) listener(error);
+    for (const listener of errorListeners ?? []) listener(error);
     if (!settledReady) {
       settledReady = true;
       rejectReady(new VNPyKitHostError(error));
@@ -117,7 +137,7 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
       send("USER_EVENT", { ...payload });
     });
 
-    port.addEventListener("message", (event: MessageEvent<unknown>) => {
+    portMessageListener = (event: MessageEvent<unknown>): void => {
       let message: ProtocolMessage;
       try {
         message = parseEnvelope(event.data);
@@ -129,6 +149,8 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
         void handle.dispose();
         return;
       }
+
+      if (disposed && message.type !== "DISPOSE_ACK") return;
 
       if (message.type === "RUNTIME_READY") {
         metrics.runtimeReadyMs = performance.now() - createdAt;
@@ -156,7 +178,7 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
           fail({ code: "RENDER_ERROR", message: safeMessage(error), phase: "render", fatal: true });
         }
       } else if (message.type === "ERROR") {
-        for (const listener of errorListeners) listener(message.payload);
+        for (const listener of errorListeners ?? []) listener(message.payload);
         if (message.payload.fatal) fail(message.payload);
       } else if (message.type === "STOP_ACK") {
         stopResolver?.();
@@ -165,13 +187,15 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
         disposeAckResolver?.();
         disposeAckResolver = undefined;
       }
-    });
+    };
+    port.addEventListener("message", portMessageListener);
     port.start();
 
-    worker.addEventListener("error", (event) => {
+    workerErrorListener = (event: ErrorEvent): void => {
       trace("worker-error", { message: event.message || "Worker failed" });
       fail({ code: "BOOT_FAILED", message: event.message || "Worker failed", phase: "bootstrap", fatal: true });
-    });
+    };
+    worker.addEventListener("error", workerErrorListener);
 
     const init: WorkerInit = {
       kind: "VNPYKIT_INIT",
@@ -209,11 +233,9 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
       send("STOP_REQUEST", {});
       const stopped = await Promise.race([acknowledged.then(() => true), delay(shutdownGraceMs).then(() => false)]);
       if (!stopped) {
-        worker?.terminate();
         status = "disposed";
         disposed = true;
-        renderer?.dispose();
-        port?.close();
+        releaseHostResources();
       }
     },
     dispose(): Promise<void> {
@@ -233,9 +255,7 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
         // SDK wheel have loaded. Terminate it synchronously so a React
         // StrictMode cleanup cannot leave a superseded Pyodide instance alive.
         if (statusAtDispose === "created" || statusAtDispose === "loading" || statusAtDispose === "failed") {
-          worker?.terminate();
-          port?.close();
-          renderer?.dispose();
+          releaseHostResources();
           status = "disposed";
           trace("dispose-complete", { mode: "pre-ready-terminate" });
           return;
@@ -249,9 +269,7 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
           disposed = wasDisposed;
           await Promise.race([acknowledged, delay(shutdownGraceMs)]);
         }
-        worker?.terminate();
-        port?.close();
-        renderer?.dispose();
+        releaseHostResources();
         status = "disposed";
         trace("dispose-complete", { mode: "graceful-or-timeout" });
       })();
@@ -265,8 +283,10 @@ export function createVNPyKitApp(options: CreateVNPyKitOptions): VNPyKitAppHandl
       return renderer?.focus(nodeId) ?? false;
     },
     onError(listener: (error: VNPyKitErrorEvent) => void): () => void {
-      errorListeners.add(listener);
-      return () => errorListeners.delete(listener);
+      const listeners = errorListeners;
+      if (disposed || listeners === undefined) return () => undefined;
+      listeners.add(listener);
+      return () => listeners.delete(listener);
     },
   };
   return handle;
