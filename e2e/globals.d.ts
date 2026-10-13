@@ -15,6 +15,7 @@ declare global {
           lastCallbackLatencyMs?: number;
         };
         stop(): Promise<void>;
+        dispose(): Promise<void>;
       };
       getSecond(): {
         metrics: {

@@ -44,6 +44,56 @@ test("repeated dispose and remount creates fresh Worker generations", async ({ p
   await expect(page.locator("#app-two").getByText("Count: 0")).toBeVisible();
 });
 
+test("retained disposed handles release renderer resources", async ({ page }) => {
+  await page.goto("/");
+  await page.evaluate(() => window.vnpykitDemo.ready);
+  const session = await page.context().newCDPSession(page);
+
+  const collect = async (): Promise<{ nodes: number; jsEventListeners: number }> => {
+    await session.send("HeapProfiler.collectGarbage");
+    await page.waitForTimeout(100);
+    return session.send("Memory.getDOMCounters") as Promise<{ nodes: number; jsEventListeners: number }>;
+  };
+
+  const initial = await collect();
+  const retainAndRemount = async (): Promise<void> => {
+    await page.evaluate(() => {
+      const scope = window as typeof window & { retainedLifecycleHandles?: Array<ReturnType<typeof window.vnpykitDemo.getFirst>> };
+      (scope.retainedLifecycleHandles ??= []).push(window.vnpykitDemo.getFirst());
+      return window.vnpykitDemo.remountFirst();
+    });
+  };
+
+  await retainAndRemount();
+  await collect();
+  await retainAndRemount();
+  const baseline = await collect();
+  const samples: Array<{ nodes: number; jsEventListeners: number }> = [];
+  for (let cycle = 0; cycle < 5; cycle += 1) {
+    await retainAndRemount();
+    samples.push(await collect());
+    await expect(page.locator("[data-vnpykit-root]")).toHaveCount(2);
+    expect(page.workers()).toHaveLength(2);
+  }
+
+  await page.evaluate(() => {
+    const scope = window as typeof window & { retainedLifecycleHandles?: unknown[] };
+    scope.retainedLifecycleHandles = [];
+  });
+  const released = await collect();
+  console.log(`M5_RETAINED_HANDLE_RESOURCES ${JSON.stringify({ initial, baseline, samples, released })}`);
+  for (const sample of samples) {
+    expect(sample.nodes).toBeLessThanOrEqual(baseline.nodes + 5);
+  }
+  // Chromium may install a one-time group of listeners during early Worker
+  // generations. The defect added listeners on every retained-handle cycle, so
+  // require the post-warmup samples to plateau instead of assuming a fixed count.
+  const stableListenerSamples = samples.slice(-3).map((sample) => sample.jsEventListeners);
+  expect(Math.max(...stableListenerSamples) - Math.min(...stableListenerSamples)).toBeLessThanOrEqual(1);
+  expect(released.nodes).toBeLessThanOrEqual(baseline.nodes + 5);
+  expect(released.jsEventListeners).toBeLessThanOrEqual(Math.max(...stableListenerSamples) + 1);
+});
+
 test("stopped app ignores later browser events", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => window.vnpykitDemo.ready);
