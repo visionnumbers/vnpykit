@@ -23,6 +23,11 @@ provided, so this report is recorded as owner evidence and does not independentl
 close the detailed checks below. No macOS test evidence was provided;
 VoiceOver with Safari is **NOT RUN**.
 
+On 2026-10-13 the owner explicitly accepted a VoiceOver/Safari manual-testing
+waiver for `v0.1.0a1`. The status remains **NOT RUN** and must not be reported as
+PASS. macOS screen-reader behavior is therefore a disclosed limitation of this
+alpha rather than completed test evidence.
+
 - [ ] NVDA with current Firefox on Windows: labels, validation alert, status update,
   form submission, and logical reading order.
 - [ ] VoiceOver with current Safari on macOS: the same form and status flow.
@@ -34,5 +39,6 @@ VoiceOver with Safari is **NOT RUN**.
   announce updates from the wrong application.
 
 Record browser, operating-system, assistive-technology versions, findings, and any
-waivers before a public release. These pending manual checks block public release,
-but do not invalidate the automated M3 implementation acceptance.
+waivers before later releases. For this alpha, the Windows results remain
+owner-reported and the owner-approved VoiceOver/Safari waiver closes the release
+policy decision without converting the unperformed test into a pass.

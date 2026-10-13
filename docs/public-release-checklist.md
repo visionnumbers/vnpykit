@@ -22,10 +22,12 @@ release. A local checkpoint commit does not authorize publishing.
 ## Legal and dependency review
 
 - [x] Record the owner-approved VNPyKit engineering identity in ADR-0008.
-- [ ] Complete VNPyKit domain and trademark clearance before public publication.
+- [x] Record the preliminary VNPyKit trademark evidence and the owner's explicit
+  residual-risk acceptance for this alpha. No formal or worldwide clearance is
+  claimed; qualified review remains recommended for later releases.
 - [ ] Confirm project copyright ownership and replace the placeholder Apache-2.0
   appendix text only if counsel or the owner requires an explicit notice.
-- [ ] Review `THIRD_PARTY_NOTICES.md`, dependency licenses, lockfiles, and vendored
+- [x] Review `THIRD_PARTY_NOTICES.md`, dependency licenses, lockfiles, and vendored
   artifact hashes; retain upstream license files and source links.
 - [x] Run `corepack pnpm audit --audit-level high` and the Python dependency audit
   chosen for the release process.
@@ -35,11 +37,11 @@ release. A local checkpoint commit does not authorize publishing.
 
 ## Security and release operations
 
-- [ ] Configure a private vulnerability-reporting channel in `SECURITY.md` (for
+- [x] Configure a private vulnerability-reporting channel in `SECURITY.md` (for
   example, GitHub private vulnerability reporting) before the repository is public.
-- [ ] Enable GitHub secret scanning, push protection, Dependabot alerts, protected
+- [x] Enable GitHub secret scanning, push protection, Dependabot alerts, protected
   branches, required CI checks, and least-privilege workflow permissions.
-- [ ] Review workflow actions and tool versions, release provenance, and artifact
+- [x] Review workflow actions and tool versions, release provenance, and artifact
   checksums. Test from a clean clone.
 - [ ] Obtain explicit authorization before creating a remote, pushing, publishing
   packages, or creating a release.
@@ -68,8 +70,9 @@ block a local source checkpoint.
 - [ ] Complete a qualified word-mark search in intended territories and relevant
   software/service classes. Registry and RDAP 404 responses are not trademark
   clearance or reservations.
-- [ ] Perform manual screen-reader and high-contrast audits on supported platforms.
-- [ ] Configure private vulnerability reporting and release provenance before any
+- [x] Record owner-reported Windows accessibility checks and the explicit
+  VoiceOver/Safari waiver for this alpha. Preserve VoiceOver/Safari as **NOT RUN**.
+- [x] Configure private vulnerability reporting and release provenance before any
   public remote, package publication, or release.
 
 ## M4 public-alpha candidate audit (2026-10-11)
@@ -84,12 +87,14 @@ block a local source checkpoint.
   26 Vitest tests, Twine, wheel-content checks, and clean Python/npm installs.
 - [x] Pass Axe with no critical/serious findings, the 12/12 external matrix, and
   the final 100-cycle Chromium stress gate.
-- [ ] Demonstrate PyPI and npm ownership. Exact endpoint 404s are evidence of no
+- [x] Demonstrate owner-confirmed PyPI publisher and npm organization control.
+  Exact endpoint 404s are evidence of no
   visible project at the check time, not evidence of ownership or reservation.
-- [ ] Create and secure `visionnumbers/vnpykit`, configure protected release
+- [x] Create and secure `visionnumbers/vnpykit`, configure protected release
   environments and OIDC publishers, and enable private vulnerability reporting.
-- [ ] Complete qualified trademark/legal review and every manual accessibility
-  item, then obtain explicit authorization for tag/push/publication/release.
+- [x] Record the alpha-specific owner trademark-risk acceptance and
+  VoiceOver/Safari waiver without claiming clearance or a test pass. Explicit
+  package-publication and GitHub-release authorization remains required.
 
 ## M4.1 registry and release-infrastructure audit (2026-10-12)
 
@@ -114,16 +119,16 @@ block a local source checkpoint.
   ignored.
 - [x] After confirming Actions billing safety, run the hardened non-publishing
   workflow and compare downloaded artifact hashes.
-- [x] Confirm the owner-reported PyPI Pending Trusted Publisher with blank
-  environment. Bind it to `public-alpha-pypi` after that protected environment
-  exists and before publication.
+- [x] Confirm the owner-reported PyPI Pending Trusted Publisher is bound to exact
+  environment `public-alpha-pypi`.
 - [ ] Complete the authorized npm first publication in dependency order, then
   configure one Trusted Publisher per existing package within the validation
   window.
-- [ ] Resolve the private-repository plan limits for branch/environment reviewer
-  protection and private vulnerability intake.
-- [ ] Complete the manual accessibility and qualified legal/confusion checks and
-  obtain explicit tag/publish/release authorization.
+- [x] Resolve the former private-repository limits by making the repository public
+  and enabling rulesets, scanning, CodeQL, and private vulnerability intake.
+  Release environments still have no required reviewers.
+- [x] Record owner acceptance of the alpha accessibility and trademark residual
+  risks. Publication and GitHub-release authorization remain separate.
 
 ## M4.2 final public-alpha gate (2026-10-12)
 
@@ -145,20 +150,21 @@ block a local source checkpoint.
   passed at source `9012e379844cba764a96e2e0680ea11283989ce5`; all seven Linux
   hashes matched the accepted manifest and every publishing/release job was
   skipped.
-- [ ] After making the repository public, enable branch protection/rulesets,
+- [x] After making the repository public, enable branch protection/rulesets,
   private vulnerability reporting, secret scanning/push protection, and the
-  three release environments with supported reviewer protection.
-- [ ] Bind the PyPI publisher to `public-alpha-pypi` only after that protected
+  three exact-tag release environments. No required environment reviewers are
+  currently configured.
+- [x] Bind the PyPI publisher to `public-alpha-pypi` only after that protected
   environment exists; recheck owner, repository, workflow, project, and
   environment immediately before publication.
-- [ ] Record detailed Windows accessibility versions/results. VoiceOver/Safari
-  is NOT RUN and remains a blocker unless the supported-platform policy records
-  an explicit owner-approved waiver.
-- [ ] Retain the owner's no-exact-match search as evidence only; record searched
+- [x] Preserve the owner-reported Windows accessibility result and record the
+  explicit alpha waiver. VoiceOver/Safari remains **NOT RUN**, not PASS.
+- [x] Retain the owner's no-exact-match search as evidence only; record searched
   registries, territories, classes, marks, dates, and qualified legal review or
   an explicit risk acceptance. Do not claim trademark clearance.
-- [ ] Obtain separate authorization for public visibility, signed tag creation,
-  interactive npm publication, PyPI publication, and GitHub prerelease creation.
+- [x] Complete the separately authorized public visibility and signed tag steps.
+- [ ] Obtain separate authorization for interactive npm publication, PyPI
+  publication, and GitHub prerelease creation.
 
 ## Final public-exposure audit (2026-10-12)
 
@@ -170,10 +176,32 @@ block a local source checkpoint.
   metadata; do not rewrite or force-push.
 - [x] Verify the GitHub account ID and username for future commits. Configure the
   repository-local Git identity to use the ID-based GitHub noreply address.
-- [x] Preserve VoiceOver/Safari as **NOT RUN**; no macOS evidence or owner-approved
-  release waiver is recorded.
+- [x] Preserve VoiceOver/Safari as **NOT RUN** and record the owner-approved alpha
+  release waiver dated 2026-10-13.
 - [x] Preserve the owner's trademark searches as preliminary evidence only; no
   certified legal-clearance claim is made.
-- [ ] After separately authorized public visibility, immediately enable the
+- [x] After separately authorized public visibility, immediately enable the
   `main` ruleset, exact required CI checks, private vulnerability reporting,
   secret scanning/push protection, CodeQL, and protected release environments.
+
+## Final alpha sign-off (2026-10-13)
+
+- [x] Verify signed tag `v0.1.0a1` remains at
+  `35b14d68a0bd70e1f1f8773e793545dc5feeabe9`.
+- [x] Verify tag-ref dry run
+  [`38280346291`](https://github.com/visionnumbers/vnpykit/actions/runs/38280346291)
+  and all seven artifact hashes.
+- [x] Record supplied EUIPO screenshot results separately from owner-reported
+  USPTO and India searches; retain preliminary-evidence limitations.
+- [x] Record owner acceptance of residual trademark/brand-confusion risk without
+  claiming formal legal clearance.
+- [x] Record the VoiceOver/Safari waiver while preserving **NOT RUN**.
+- [x] Independently verify live Private Vulnerability Reporting, secret scanning,
+  push protection, full-SHA enforcement, CodeQL, Dependabot, and branch/tag
+  rulesets.
+- [ ] Merge the post-tag documentation PR. Its contents do not automatically
+  appear in the immutable tag.
+- [ ] Add the post-tag trademark/accessibility disclosure to the GitHub
+  prerelease description before announcement.
+- [ ] Obtain explicit authorization for interactive npm publication, the PyPI
+  workflow, and GitHub prerelease creation.
