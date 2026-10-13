@@ -2,9 +2,12 @@
 
 - **Missing wheel during CLI build:** build `packages/python-sdk` before packing the
   CLI. The CLI deliberately refuses ambiguous or missing wheel sets.
-- **Dynamic module fetch failed:** serve through HTTP and map `.mjs` to a JavaScript
-  MIME type. Confirm `assetsBaseUrl` ends at the directory containing `pyodide/` and
-  `wheels/`.
+- **`BOOT_FAILED` or dynamic module fetch failed for `pyodide.mjs`:** inspect the
+  response `Content-Type`. An observed Windows `python -m http.server` setup
+  returned `text/plain`; serve `.mjs` as `text/javascript` (or another supported
+  JavaScript MIME type). Confirm `assetsBaseUrl` ends at the directory containing
+  `pyodide/` and `wheels/`. See the
+  [Windows Python server example](deployment.md#windows-python-http-server).
 - **Python source request returned 404:** copy `app.py` into the deployed site and
   resolve its URL relative to the page.
 - **Worker rejected by CSP:** deploy the package's separate `worker.js` and allow
