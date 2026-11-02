@@ -33,7 +33,7 @@ Repository = "https://github.com/visionnumbers/vnpykit.git"
 [project.optional-dependencies]
 dev = [
   "build==1.6.1",
-  "mypy==2.4.0",
+  "mypy==2.4.1",
   "pytest==9.1.1",
   "ruff==0.17.0",
 ]
